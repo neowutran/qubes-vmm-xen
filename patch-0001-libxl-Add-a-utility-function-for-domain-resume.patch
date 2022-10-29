@@ -27,8 +27,8 @@ Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
 
 diff --git a/tools/libxl/libxl_dom_suspend.c b/tools/libxl/libxl_dom_suspend.c
 index 4fa22bb7391049f2ea4ac32f21660212053bd4bc..fa50e8801f35d173a99ae5dd19eb941649e14019 100644
---- a/tools/libxl/libxl_dom_suspend.c
-+++ b/tools/libxl/libxl_dom_suspend.c
+--- a/tools/libs/light/libxl_dom_suspend.c
++++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -451,6 +451,22 @@ int libxl__domain_resume_device_model_deprecated(libxl__gc *gc, uint32_t domid)
      return 0;
  }
