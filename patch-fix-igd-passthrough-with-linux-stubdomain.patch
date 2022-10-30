@@ -173,7 +173,7 @@ index 957ff5c8e9..6feab9602e 100644
 -        }
 -        break;
 +        vga_found = true;
-+        if (pcidev->bus == 0 && pcidev->dev == 2 && pcidev->func == 0)
++        if (pci->bus == 0 && pci->dev == 2 && pci->func == 0)
 +            igd_found = true;
      }
  
