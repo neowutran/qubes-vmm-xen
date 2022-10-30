@@ -1,6 +1,7 @@
 # Build ocaml bits unless rpmbuild was run with --without ocaml
 # or ocamlopt is missing (the xen makefile doesn't build ocaml bits if it isn't there)
 %global _default_patch_fuzz 2
+%global ldflags 
 %define with_ocaml 0
 %define build_ocaml 0
 # Build with docs unless rpmbuild was run with --without docs
@@ -421,12 +422,14 @@ mkdir -p dist/install%{_libdir}/ocaml/stublibs
 %endif
 %define seabiosloc /usr/share/seabios/bios-256k.bin
 #export XEN_VENDORVERSION="-%{release}"
-export EXTRA_CFLAGS_XEN_TOOLS="$RPM_OPT_FLAGS -Wno-error=declaration-after-statement"
-export EXTRA_CFLAGS_QEMU_TRADITIONAL="$RPM_OPT_FLAGS"
-export EXTRA_CFLAGS_QEMU_XEN="$RPM_OPT_FLAGS"
 export PYTHON="%{__python3}"
 export KCONFIG_CONFIG=%{SOURCE3}
 export XEN_CONFIG_EXPERT=y
+export EXTRA_CFLAGS_XEN_TOOLS="$RPM_OPT_FLAGS -Wno-error=use-after-free $LDFLAGS"
+export EXTRA_CFLAGS_QEMU_TRADITIONAL="$RPM_OPT_FLAGS"
+export EXTRA_CFLAGS_QEMU_XEN="$RPM_OPT_FLAGS"
+export LDFLAGS_SAVE=`echo $LDFLAGS | sed -e 's/-Wl,//g' -e 's/,/ /g' -e 's? -specs=[-a-z/0-9]*??g'`
+export CFLAGS_SAVE="$CFLAGS"
 %if %build_hyp
 %if %build_crosshyp
 %define efi_flags LD_EFI=false
@@ -465,6 +468,9 @@ export PATH="/usr/bin:$PATH"
 autoreconf -i
 # END QUBES SPECIFIC PART
 ./configure --prefix=%{_prefix} --libdir=%{_libdir} --libexecdir=%{_libexecdir} --with-system-seabios=%{seabiosloc} --with-linux-backend-modules="xen-evtchn xen-gntdev xen-gntalloc xen-blkback xen-netback xen-pciback xen-scsiback xen-acpi-processor" $CONFIG_EXTRA
+unset CFLAGS CXXFLAGS FFLAGS LDFLAGS
+export LDFLAGS="$LDFLAGS_SAVE"
+export CFLAGS="$CFLAGS_SAVE -Wno-error=address"
 make %{?_smp_mflags} %{?ocaml_flags} prefix=/usr tools
 %if %build_docs
 make prefix=/usr docs
