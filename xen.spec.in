@@ -137,7 +137,7 @@ Patch650: patch-pvcontrol-0002-libxl-check-control-feature-before-issuing-pvcont
 
 # GCC8 fixes
 Patch714: patch-tools-kdd-mute-spurious-gcc-warning.patch
-Patch715: patch-asm-include-mute-spurious-gcc-warning.patch
+#Patch715: patch-asm-include-mute-spurious-gcc-warning.patch
 
 # Support for Linux based stubdom
 Patch900: patch-disable-dom0-qemu.patch
