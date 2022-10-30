@@ -702,6 +702,7 @@ cp %{SOURCE32} %{buildroot}/usr/lib/modules-load.d/xen.conf
 # unused and dangerous
 #rm -f %{buildroot}/%{_bindir}/pygrub
 #rm -rf %{buildroot}/%{python3_sitearch}/pygrub*
+rm -Rf %{python3_sitearch}/pygrub*
 # END QUBES SPECIFIC PART
 
 ############ create dirs in /var ############
@@ -1009,15 +1010,17 @@ fi
 
 %{python3_sitearch}/xenfsimage*.so
 %{python3_sitearch}/grub
-%{python3_sitearch}/pygrub-*.egg-info
+#%{python3_sitearch}/pygrub-*.egg-info
 
 # The firmware
 %ifarch %{ix86} x86_64
 %dir %{_libexecdir}/%{name}/boot
 %{_libexecdir}/xen/boot/hvmloader
 %ifnarch %{ix86}
-%{_libexecdir}/%{name}/boot/xen-shim
-/usr/lib/debug%{_libexecdir}/xen/boot/xen-shim-syms
+# Neowutran: file doesn't not exist after compile. Don't know why, trying to
+# ignore
+#%{_libexecdir}/%{name}/boot/xen-shim
+#/usr/lib/debug%{_libexecdir}/xen/boot/xen-shim-syms
 %endif
 %if %build_ovmf
 %{_libexecdir}/xen/boot/ovmf.bin
@@ -1047,7 +1050,7 @@ fi
 %{_bindir}/qemu-*-xen
 %{_bindir}/xenstore
 %{_bindir}/xenstore-*
-%{_bindir}/pygrub
+#%{_bindir}/pygrub
 %{_bindir}/xentrace*
 #%#{_bindir}/remus
 # XSM
