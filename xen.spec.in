@@ -1169,5 +1169,37 @@ fi
 %{_libdir}/ocaml/xen*/*.cmx
 %endif
 
+
+# BEGIN QUBES SPECIFIC PART
+%files qemu-tools
+/usr/bin/qemu-img
+/usr/bin/qemu-nbd
+
+%files qubes-vm
+%{_bindir}/xenstore
+%{_bindir}/xenstore-*
+%{_sbindir}/xl
+%{_unitdir}/xendriverdomain.service
+%config(noreplace) %{_sysconfdir}/xen/xl.conf
+
+%dir %attr(0700,root,root) %{_sysconfdir}/xen
+%dir %attr(0700,root,root) %{_sysconfdir}/xen/scripts/
+%config %attr(0700,root,root) %{_sysconfdir}/xen/scripts/*
+
+# General Xen state
+%dir %{_localstatedir}/lib/xen
+%dir %{_localstatedir}/lib/xen/dump
+
+# Xen logfiles
+%dir %attr(0700,root,root) %{_localstatedir}/log/xen
+
+# Python modules
+%dir %{python3_sitearch}/xen
+%{python3_sitearch}/xen/__init__.*
+%{python3_sitearch}/xen/lowlevel
+%{python3_sitearch}/xen-*.egg-info
+# END QUBES SPECIFIC PART
+
+
 %changelog
 @CHANGELOG@
