@@ -692,7 +692,7 @@ rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xencommons
 rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xendomains
 rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xendriverdomain
 # BEGIN QUBES SPECIFIC PART
-rm %{_sysconfdir}/sysconfig/xendomains
+#rm %{_sysconfdir}/sysconfig/xendomains
 cp %{SOURCE32} %{buildroot}/usr/lib/modules-load.d/xen.conf
 
 # get rid of standard domain starting scripts
