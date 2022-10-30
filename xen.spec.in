@@ -63,6 +63,7 @@ Summary: Xen is a virtual machine monitor
 Name:    xen
 Version: %(echo @VERSION@ | sed 's/-rc.*//')
 Release: %{?rctag}@REL@%{?dist}
+Epoch:   2001
 License: GPLv2+ and LGPLv2+ and BSD
 URL:     http://xen.org/
 Source0: https://downloads.xenproject.org/release/xen/%{upstream_version}/xen-%{upstream_version}.tar.gz
@@ -268,7 +269,7 @@ BuildRequires: gcc-x86_64-linux-gnu
 BuildRequires: gcc make
 Requires: iproute
 Requires: python3-lxml
-Requires: xen-runtime = %{version}-%{release}
+Requires: xen-runtime = %{epoch}:%{version}-%{release}
 # Not strictly a dependency, but kpartx is by far the most useful tool right
 # now for accessing domU data from within a dom0 so bring it in when the user
 # installs xen.
@@ -304,7 +305,7 @@ Xen hypervisor
 %package -n python%{python3_pkgversion}-%{name}
 Summary: python%{python3_pkgversion} bindings for Xen tools
 Group: Development/Libraries
-Requires: xen-libs = %{version}-%{release}
+Requires: xen-libs = %{epoch}:%{version}-%{release}
 Requires: python%{python3_pkgversion}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
@@ -324,7 +325,7 @@ which manage Xen virtual machines.
 
 %package runtime
 Summary: Core Xen runtime environment
-Requires: xen-libs = %{version}-%{release}
+Requires: xen-libs = %{epoch}:%{version}-%{release}
 #Requires: /usr/bin/qemu-img /usr/bin/qemu-nbd
 Requires: /usr/bin/qemu-img
 # Ensure we at least have a suitable kernel installed, though we can't
@@ -377,7 +378,7 @@ This package contains the Xen documentation.
 
 %package devel
 Summary: Development libraries for Xen tools
-Requires: xen-libs = %{version}-%{release}
+Requires: xen-libs = %{epoch}:%{version}-%{release}
 Requires: libuuid-devel
 
 %description devel
@@ -396,7 +397,7 @@ to build the xen packages.
 %if %build_ocaml
 %package ocaml
 Summary: Ocaml libraries for Xen tools
-Requires: ocaml-runtime, xen-libs = %{version}-%{release}
+Requires: ocaml-runtime, xen-libs = %{epoch}:%{version}-%{release}
 
 %description ocaml
 This package contains libraries for ocaml tools to manage Xen
@@ -405,7 +406,7 @@ virtual machines.
 
 %package ocaml-devel
 Summary: Ocaml development libraries for Xen tools
-Requires: xen-ocaml = %{version}-%{release}
+Requires: xen-ocaml = %{epoch}:%{version}-%{release}
 
 %description ocaml-devel
 This package contains libraries for developing ocaml tools to
@@ -424,9 +425,9 @@ budled with Xen, making them available for general use.
 
 %package qubes-vm
 Summary: Xen files required in Qubes VM
-Requires: xen-libs = %{version}-%{release}
+Requires: xen-libs = %{epoch}:%{version}-%{release}
 Conflicts: xen
-Provides: xen-qubes-vm-essentials = %{version}-%{release}
+Provides: xen-qubes-vm-essentials = %{epoch}:%{version}-%{release}
 
 %description qubes-vm
 Just a few xenstore-* tools and Xen hotplug scripts needed by Qubes VMs
@@ -434,56 +435,6 @@ Just a few xenstore-* tools and Xen hotplug scripts needed by Qubes VMs
 
 %prep
 %autosetup -p1 -n %{name}-%{upstream_version}
-#%setup -q
-#%patch4 -p1
-#%patch5 -p1
-#%patch6 -p1
-#%patch7 -p1
-#%patch8 -p1
-#%patch9 -p1
-#%patch10 -p1
-#%patch11 -p1
-#%patch12 -p1
-#%patch13 -p1
-#%patch14 -p1
-#%patch15 -p1
-#%patch16 -p1
-#%patch17 -p1
-#%patch18 -p1
-#%patch19 -p1
-#%patch20 -p1
-#%patch21 -p1
-#%patch22 -p1
-#%patch23 -p1
-#%patch24 -p1
-#%patch25 -p1
-#%patch33 -p1
-#%patch34 -p1
-#%patch37 -p1
-#%patch40 -p1
-#%patch41 -p1
-#%patch42 -p1
-#%patch43 -p1
-#%patch44 -p1
-#%patch45 -p1
-#%patch46 -p1
-
-# qemu-xen-traditional patches
-#pushd tools/qemu-xen-traditional
-#%patch27 -p1
-#%patch29 -p1
-#%patch30 -p1
-#%patch31 -p1
-#%patch32 -p1
-#%patch35 -p1
-#%patch36 -p1
-#%patch38 -p1
-#%patch39 -p1
-#popd
-
-# qemu-xen patches
-#pushd tools/qemu-xen
-#popd
 
 # stubdom sources
 cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} stubdom
