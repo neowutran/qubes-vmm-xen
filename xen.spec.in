@@ -1047,7 +1047,7 @@ fi
 %ghost %{_localstatedir}/run/xenstored
 
 # All xenstore CLI tools
-%{_bindir}/qemu-*-xen
+#%{_bindir}/qemu-*-xen
 %{_bindir}/xenstore
 %{_bindir}/xenstore-*
 #%{_bindir}/pygrub
