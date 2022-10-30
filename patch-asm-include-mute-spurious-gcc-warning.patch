@@ -1,7 +1,7 @@
 diff --git a/xen/arch/x86/include/asm/mm.h b/xen/arch/x86/include/asm/mm.h
 index 0fc826de46..0c316ec5cf 100644
---- a/xen/arch/x86/include/asm/mm.h
-+++ b/xen/arch/x86/include/asm/mm.h
+--- a/xen/include/asm-x86/mm.h
++++ b/xen/include/asm-x86/mm.h
 @@ -308,9 +308,12 @@ struct page_info
  #define is_xen_heap_page(page) ((page)->count_info & PGC_xen_heap)
  #define is_xen_heap_mfn(mfn) \
