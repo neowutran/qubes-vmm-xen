@@ -797,7 +797,7 @@ fi
 %dir %attr(0700,root,root) %{_sysconfdir}/%{name}/scripts/
 %config %attr(0700,root,root) %{_sysconfdir}/%{name}/scripts/*
 
-%{_sysconfdir}/bash_completion.d/xl.sh
+%{_sysconfdir}/bash_completion.d/xl
 
 %{_unitdir}/proc-xen.mount
 %{_unitdir}/var-lib-xenstored.mount
