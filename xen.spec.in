@@ -1,7 +1,6 @@
 # Build ocaml bits unless rpmbuild was run with --without ocaml
 # or ocamlopt is missing (the xen makefile doesn't build ocaml bits if it isn't there)
 %global _default_patch_fuzz 2
-%global ldflags 
 %define with_ocaml 0
 %define build_ocaml 0
 # Build with docs unless rpmbuild was run with --without docs
