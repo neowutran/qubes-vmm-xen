@@ -1,6 +1,6 @@
-diff -ur xen-4.14.0-orig/tools/libxl/libxl_create.c xen-4.14.0-new/tools/libxl/libxl_create.c
---- xen-4.14.0-orig/tools/libxl/libxl_create.c	2020-07-23 18:07:51.000000000 +0300
-+++ xen-4.14.0-new/tools/libxl/libxl_create.c	2020-08-31 17:41:42.587563737 +0300
+diff -ur xen-4.14.0-orig/tools/libs/light/libxl_create.c xen-4.14.0-new/tools/libs/light/libxl_create.c
+--- xen-4.14.0-orig/tools/libs/light/libxl_create.c	2020-07-23 18:07:51.000000000 +0300
++++ xen-4.14.0-new/tools/libs/light/libxl_create.c	2020-08-31 17:41:42.587563737 +0300
 @@ -27,6 +27,36 @@
  
  #include <xen-xsm/flask/flask.h>
@@ -56,9 +56,9 @@ diff -ur xen-4.14.0-orig/tools/libxl/libxl_create.c xen-4.14.0-new/tools/libxl/l
          return;
      }
      case LIBXL_DOMAIN_TYPE_PV:
-diff -ur xen-4.14.0-orig/tools/libxl/libxl_dm.c xen-4.14.0-new/tools/libxl/libxl_dm.c
---- xen-4.14.0-orig/tools/libxl/libxl_dm.c	2020-07-23 18:07:51.000000000 +0300
-+++ xen-4.14.0-new/tools/libxl/libxl_dm.c	2020-08-31 17:41:42.588563739 +0300
+diff -ur xen-4.14.0-orig/tools/libs/light/libxl_dm.c xen-4.14.0-new/tools/libs/light/libxl_dm.c
+--- xen-4.14.0-orig/tools/libs/light/libxl_dm.c	2020-07-23 18:07:51.000000000 +0300
++++ xen-4.14.0-new/tools/libs/light/libxl_dm.c	2020-08-31 17:41:42.588563739 +0300
 @@ -1446,6 +1446,9 @@
                  GCSPRINTF("qxl-vga,vram_size_mb=%"PRIu64",ram_size_mb=%"PRIu64,
                  (b_info->video_memkb/2/1024), (b_info->video_memkb/2/1024) ) );
@@ -69,9 +69,9 @@ diff -ur xen-4.14.0-orig/tools/libxl/libxl_dm.c xen-4.14.0-new/tools/libxl/libxl
          default:
              LOGD(ERROR, guest_domid, "Invalid emulated video card specified");
              return ERROR_INVAL;
-diff -ur xen-4.14.0-orig/tools/libxl/libxl_domain.c xen-4.14.0-new/tools/libxl/libxl_domain.c
---- xen-4.14.0-orig/tools/libxl/libxl_domain.c	2020-07-23 18:07:51.000000000 +0300
-+++ xen-4.14.0-new/tools/libxl/libxl_domain.c	2020-08-31 17:42:35.352685370 +0300
+diff -ur xen-4.14.0-orig/tools/libs/light/libxl_domain.c xen-4.14.0-new/tools/libs/light/libxl_domain.c
+--- xen-4.14.0-orig/tools/libs/light/libxl_domain.c	2020-07-23 18:07:51.000000000 +0300
++++ xen-4.14.0-new/tools/libs/light/libxl_domain.c	2020-08-31 17:42:35.352685370 +0300
 @@ -1078,6 +1078,30 @@
  static void destroy_finish_check(libxl__egc *egc,
                                   libxl__domain_destroy_state *dds);
@@ -112,9 +112,9 @@ diff -ur xen-4.14.0-orig/tools/libxl/libxl_domain.c xen-4.14.0-new/tools/libxl/l
      libxl__unlock_file(lock);
  
      /* Clean up qemu-save and qemu-resume files. They are
-diff -ur xen-4.14.0-orig/tools/libxl/libxl_types.idl xen-4.14.0-new/tools/libxl/libxl_types.idl
---- xen-4.14.0-orig/tools/libxl/libxl_types.idl	2020-07-23 18:07:51.000000000 +0300
-+++ xen-4.14.0-new/tools/libxl/libxl_types.idl	2020-08-31 17:41:42.590563744 +0300
+diff -ur xen-4.14.0-orig/tools/libs/light/libxl_types.idl xen-4.14.0-new/tools/libs/light/libxl_types.idl
+--- xen-4.14.0-orig/tools/libs/light/libxl_types.idl	2020-07-23 18:07:51.000000000 +0300
++++ xen-4.14.0-new/tools/libs/light/libxl_types.idl	2020-08-31 17:41:42.590563744 +0300
 @@ -38,6 +38,7 @@
  #
  

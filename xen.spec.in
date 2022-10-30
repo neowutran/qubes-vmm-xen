@@ -170,7 +170,6 @@ Patch1030: patch-fix-igd-passthrough-with-linux-stubdomain.patch
 
 # Reproducible builds
 Patch1050: patch-0001-No-insert-of-the-build-timestamp-into-the-x86-xen-ef.patch
-Patch1051: patch-0002-common-remove-gzip-timestamp.patch
 Patch1052: patch-Define-build-dates-time-based-on-SOURCE_DATE_EPOCH.patch
 Patch1053: patch-docs-rename-DATE-to-PANDOC_REL_DATE-and-allow-to-spe.patch
 Patch1054: patch-docs-xen-headers-use-alphabetical-sorting-for-incont.patch
