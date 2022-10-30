@@ -700,8 +700,8 @@ cp %{SOURCE32} %{buildroot}/usr/lib/modules-load.d/xen.conf
 #rm %{_unitdir}/xendomains.service
 
 # unused and dangerous
-rm -f %{_bindir}/pygrub
-#rm -rf %{buildroot}/%{python3_sitearch}/pygrub*
+rm -f %{buildroot}%{_bindir}/pygrub
+rm -rf %{buildroot}/%{python3_sitearch}/pygrub*
 rm -Rf %{python3_sitearch}/pygrub*
 # END QUBES SPECIFIC PART
 
