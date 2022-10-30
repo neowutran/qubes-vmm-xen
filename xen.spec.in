@@ -696,12 +696,12 @@ rm %{buildroot}%{_sysconfdir}/rc.d/init.d/xendriverdomain
 cp %{SOURCE32} %{buildroot}/usr/lib/modules-load.d/xen.conf
 
 # get rid of standard domain starting scripts
-rm %{buildroot}%{_unitdir}/xen-qemu-dom0-disk-backend.service
+#rm %{buildroot}%{_unitdir}/xen-qemu-dom0-disk-backend.service
 #rm %{_unitdir}/xendomains.service
 
 # unused and dangerous
-rm -f %{buildroot}/%{_bindir}/pygrub
-rm -rf %{buildroot}/%{python3_sitearch}/pygrub*
+#rm -f %{buildroot}/%{_bindir}/pygrub
+#rm -rf %{buildroot}/%{python3_sitearch}/pygrub*
 # END QUBES SPECIFIC PART
 
 ############ create dirs in /var ############
