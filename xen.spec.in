@@ -628,7 +628,7 @@ rm -f %{buildroot}%{_sbindir}/xen-python-path
 
 # qemu stuff (unused or available from upstream)
 rm -rf %{buildroot}/usr/share/xen/man
-rm -rf %{buildroot}/usr/bin/qemu-*-xen
+#rm -rf %{buildroot}/usr/bin/qemu-*-xen
 # BEGIN QUBES SPECIFIC PART
 ln -s ../libexec/%{name}/bin/qemu-img %{buildroot}/%{_bindir}/qemu-img
 ln -s ../libexec/%{name}/bin/qemu-nbd %{buildroot}/%{_bindir}/qemu-nbd
