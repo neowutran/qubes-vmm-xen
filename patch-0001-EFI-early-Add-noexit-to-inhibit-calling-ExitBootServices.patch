@@ -58,7 +58,6 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
      const char *option_str;
      bool use_cfg_file;
 
-
 @@ -971,6 +974,8 @@
                      base_video = true;
                  else if ( wstrcmp(ptr + 1, L"mapbs") == 0 )
