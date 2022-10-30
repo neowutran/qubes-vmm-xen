@@ -304,7 +304,7 @@ Xen hypervisor
 %package -n python%{python3_pkgversion}-%{name}
 Summary: python%{python3_pkgversion} bindings for Xen tools
 Group: Development/Libraries
-Requires: xen-libs = %{epoch}:%{version}-%{release}
+Requires: xen-libs = %{version}-%{release}
 Requires: python%{python3_pkgversion}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
