@@ -18,10 +18,10 @@ Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
  tools/libxl/libxl_domain.c      |  1 +
  2 files changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/tools/libxl/libxl_dom_suspend.c b/tools/libxl/libxl_dom_suspend.c
+diff --git a/tools/libs/light/libxl_dom_suspend.c b/tools/libs/light/libxl_dom_suspend.c
 index 42c0e0a152e04fab34152d711564ffe148f24a4c..55a172a46f8703661e696971bee07dce93117411 100644
---- a/tools/libxl/libxl_dom_suspend.c
-+++ b/tools/libxl/libxl_dom_suspend.c
+--- a/tools/libs/light/libxl_dom_suspend.c
++++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -321,9 +321,11 @@ static void domain_suspend_common_pvcontrol_suspending(libxl__egc *egc,
      STATE_AO_GC(dsps->ao);
      xs_transaction_t t = 0;
@@ -108,10 +108,10 @@ index 42c0e0a152e04fab34152d711564ffe148f24a4c..55a172a46f8703661e696971bee07dce
      if (type == LIBXL_DOMAIN_TYPE_INVALID) {
          rc = ERROR_FAIL;
          goto out;
-diff --git a/tools/libxl/libxl_domain.c b/tools/libxl/libxl_domain.c
+diff --git a/tools/libs/light/libxl_domain.c b/tools/libs/light/libxl_domain.c
 index a6b0b509cc04379e9d596a38644e3db5963011ea..e8e0894c8617a36f6fc13af73daa1ed290a466ce 100644
---- a/tools/libxl/libxl_domain.c
-+++ b/tools/libxl/libxl_domain.c
+--- a/tools/libs/light/libxl_domain.c
++++ b/tools/libs/light/libxl_domain.c
 @@ -566,6 +566,7 @@ int libxl_domain_suspend_only(libxl_ctx *ctx, uint32_t domid,
      dsps->ao = ao;
      dsps->domid = domid;

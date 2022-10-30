@@ -39,10 +39,10 @@ Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
  tools/libxl/libxl_internal.h    |   1 +
  2 files changed, 150 insertions(+), 22 deletions(-)
 
-diff --git a/tools/libxl/libxl_dom_suspend.c b/tools/libxl/libxl_dom_suspend.c
+diff --git a/tools/libs/light/libxl_dom_suspend.c b/tools/libs/light/libxl_dom_suspend.c
 index d2a88ea34efb115a8f2b861daf5884d95f39e81d..d276b3c17e70105c19c82e9da570a24297d039f5 100644
---- a/tools/libxl/libxl_dom_suspend.c
-+++ b/tools/libxl/libxl_dom_suspend.c
+--- a/tools/libs/light/libxl_dom_suspend.c
++++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -19,9 +19,9 @@
  
  /*====================== Domain suspend =======================*/
@@ -297,10 +297,10 @@ index d2a88ea34efb115a8f2b861daf5884d95f39e81d..d276b3c17e70105c19c82e9da570a242
      default:
          rc = ERROR_INVAL;
          goto out;
-diff --git a/tools/libxl/libxl_internal.h b/tools/libxl/libxl_internal.h
+diff --git a/tools/libs/light/libxl_internal.h b/tools/libs/light/libxl_internal.h
 index 34063baf81c4eae81790e2f25cc37f5cf58eb196..37e5c98f63472e66100b6301d78ac0178cbf987e 100644
---- a/tools/libxl/libxl_internal.h
-+++ b/tools/libxl/libxl_internal.h
+--- a/tools/libs/light/libxl_internal.h
++++ b/tools/libs/light/libxl_internal.h
 @@ -3615,6 +3615,7 @@ struct libxl__domain_suspend_state {
                                struct libxl__domain_suspend_state*, int rc);
      void (*callback_common_done)(libxl__egc*,

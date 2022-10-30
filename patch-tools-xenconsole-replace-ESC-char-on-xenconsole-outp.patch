@@ -62,8 +62,8 @@ index f92ad3d8cf..bdfc8aef52 100644
  {
  	struct termios attr;
  	int domid;
--	char *sopt = "hn:";
-+	char *sopt = "hn:r";
+-	const char *sopt = "hn:";
++	const char *sopt = "hn:r";
  	int ch;
  	unsigned int num = 0;
  	int opt_ind=0;
@@ -80,7 +80,7 @@ index f92ad3d8cf..bdfc8aef52 100644
  	console_type type = CONSOLE_INVAL;
  	bool interactive = 0;
 +	bool replace_escape = 1;
- 	char *console_names = "serial, pv, vuart";
+ 	const char *console_names = "serial, pv, vuart";
  
 +	if (getenv("XEN_CONSOLE_REPLACE_ESCAPE"))
 +		replace_escape = atoi(getenv("XEN_CONSOLE_REPLACE_ESCAPE"));
@@ -130,7 +130,7 @@ index 4e65d73867..d9d78ed079 100644
      int opt = 0, num = 0;
      libxl_console_type type = 0;
 +    bool replace_escape = true;
-     char *console_names = "pv, serial, vuart";
+     const char *console_names = "pv, serial, vuart";
  
 -    SWITCH_FOREACH_OPT(opt, "n:t:", NULL, "console", 1) {
 +    SWITCH_FOREACH_OPT(opt, "n:t:r", NULL, "console", 1) {

@@ -26,8 +26,8 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
 index fc264a3a13a6..cc9c5bea1e7f 100644
---- a/tools/libxl/libxl_dm.c
-+++ b/tools/libxl/libxl_dm.c
+--- a/tools/libs/light/libxl_dm.c
++++ b/tools/libs/light/libxl_dm.c
 @@ -2625,10 +2625,11 @@ static void spawn_qmp_proxy(libxl__egc *egc,
      sdss->qmp_proxy_spawn.failure_cb = qmp_proxy_startup_failed;
      sdss->qmp_proxy_spawn.detached_cb = qmp_proxy_detached;

@@ -121,7 +121,6 @@ Patch621: patch-libxc-fix-xc_gntshr_munmap-semantic.patch
 Patch622: patch-xen-disable-efi-gettime.patch
 Patch627: patch-libxl-automatically-enable-gfx_passthru-if-IGD-is-as.patch
 Patch634: patch-libxl-cleanup-remaining-backend-xs-dirs-after-driver.patch
-Patch635: patch-libxl-user-defined-max_maptrack_frames.patch
 Patch636: patch-autoconf-fix-handling-absolute-PYTHON-path.patch
 Patch638: patch-libxl-do-not-require-filling-backend_domid-to-remove.patch
 Patch639: patch-libxl-add-pcidevs-to-stubdomain-earlier.patch

@@ -21,10 +21,10 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
  tools/libxl/libxl_domain.c | 28 ++++++++++++++++++++++++++--
  1 file changed, 26 insertions(+), 2 deletions(-)
 
-diff --git a/tools/libxl/libxl_domain.c b/tools/libxl/libxl_domain.c
+diff --git a/tools/libs/light/libxl_domain.c b/tools/libs/light/libxl_domain.c
 index 7f0986c18569..2f76e0067374 100644
---- a/tools/libxl/libxl_domain.c
-+++ b/tools/libxl/libxl_domain.c
+--- a/tools/libs/light/libxl_domain.c
++++ b/tools/libs/light/libxl_domain.c
 @@ -770,7 +770,12 @@ int libxl__domain_pvcontrol(libxl__egc *egc, libxl__xswait_state *pvcontrol,
                              domid_t domid, const char *cmd)
  {

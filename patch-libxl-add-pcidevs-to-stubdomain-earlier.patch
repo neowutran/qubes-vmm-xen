@@ -38,15 +38,15 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
  tools/libxl/libxl_pci.c      | 20 +++++++++++---------
  3 files changed, 46 insertions(+), 11 deletions(-)
 
-diff --git a/tools/libxl/libxl_dm.c b/tools/libxl/libxl_dm.c
+diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
 index f2dc5696b920..dfa1e6411712 100644
---- a/tools/libxl/libxl_dm.c
-+++ b/tools/libxl/libxl_dm.c
+--- a/tools/libs/light/libxl_dm.c
++++ b/tools/libs/light/libxl_dm.c
 @@ -2207,6 +2207,9 @@ static void spawn_stubdom_pvqemu_cb(libxl__egc *egc,
                                  libxl__dm_spawn_state *stubdom_dmss,
                                  int rc);
  
-+static void spawn_stub_pcidevs_dm(libxl__egc *egc,
++static void spawn_stub_pcis_dm(libxl__egc *egc,
 +                                  libxl__multidev *multidev, int ret);
 +
  static void spawn_stub_launch_dm(libxl__egc *egc,
@@ -57,7 +57,7 @@ index f2dc5696b920..dfa1e6411712 100644
  
      libxl__multidev_begin(ao, &sdss->multidev);
 -    sdss->multidev.callback = spawn_stub_launch_dm;
-+    sdss->multidev.callback = spawn_stub_pcidevs_dm;
++    sdss->multidev.callback = spawn_stub_pcis_dm;
      libxl__add_disks(egc, ao, dm_domid, dm_config, &sdss->multidev);
      libxl__multidev_prepared(egc, &sdss->multidev, 0);
  
@@ -65,7 +65,7 @@ index f2dc5696b920..dfa1e6411712 100644
      spawn_stubdom_pvqemu_cb(egc, &sdss->pvqemu, ret);
  }
  
-+static void spawn_stub_pcidevs_dm(libxl__egc *egc,
++static void spawn_stub_pcis_dm(libxl__egc *egc,
 +                                  libxl__multidev *multidev, int ret)
 +{
 +    libxl__stub_dm_spawn_state *sdss = CONTAINER_OF(multidev, *sdss, multidev);
@@ -83,7 +83,7 @@ index f2dc5696b920..dfa1e6411712 100644
 +
 +    libxl__multidev_begin(ao, &sdss->multidev);
 +    sdss->multidev.callback = spawn_stub_launch_dm;
-+    libxl__add_pcidevs(egc, ao, dm_domid, guest_config, &sdss->multidev);
++    libxl__add_pcis(egc, ao, dm_domid, guest_config, &sdss->multidev);
 +    libxl__multidev_prepared(egc, &sdss->multidev, 0);
 +    return;
 +
@@ -104,24 +104,24 @@ index f2dc5696b920..dfa1e6411712 100644
          goto out;
       }
  
-diff --git a/tools/libxl/libxl_internal.h b/tools/libxl/libxl_internal.h
+diff --git a/tools/libs/light/libxl_internal.h b/tools/libs/light/libxl_internal.h
 index 3bc3bbcf847b..2a0d46b46dc8 100644
---- a/tools/libxl/libxl_internal.h
-+++ b/tools/libxl/libxl_internal.h
+--- a/tools/libs/light/libxl_internal.h
++++ b/tools/libs/light/libxl_internal.h
 @@ -1721,6 +1721,9 @@ _hidden int libxl__device_pci_setdefault(libxl__gc *gc, uint32_t domid,
                                           libxl_device_pci *pci, bool hotplug);
  _hidden bool libxl__is_igd_vga_passthru(libxl__gc *gc,
                                          const libxl_domain_config *d_config);
-+_hidden void libxl__add_pcidevs(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
++_hidden void libxl__add_pcis(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
 +                                libxl_domain_config *d_config,
 +                                libxl__multidev *multidev);
  
  /* from libxl_dtdev */
  
-diff --git a/tools/libxl/libxl_pci.c b/tools/libxl/libxl_pci.c
+diff --git a/tools/libs/light/libxl_pci.c b/tools/libs/light/libxl_pci.c
 index bc5843b13701..c473fe650f2a 100644
---- a/tools/libxl/libxl_pci.c
-+++ b/tools/libxl/libxl_pci.c
+--- a/tools/libs/light/libxl_pci.c
++++ b/tools/libs/light/libxl_pci.c
 @@ -1338,10 +1338,6 @@ static void pci_add_dm_done(libxl__egc *egc,
  
      if (rc) goto out;
@@ -130,8 +130,8 @@ index bc5843b13701..c473fe650f2a 100644
 -    if (isstubdom)
 -        starting = false;
 -
-     sysfs_path = GCSPRINTF(SYSFS_PCI_DEV"/"PCI_BDF"/resource", pcidev->domain,
-                            pcidev->bus, pcidev->dev, pcidev->func);
+     sysfs_path = GCSPRINTF(SYSFS_PCI_DEV"/"PCI_BDF"/resource", pci->domain,
+                            pci->bus, pci->dev, pci->func);
      f = fopen(sysfs_path, "r");
 @@ -1567,6 +1563,13 @@ void libxl__device_pci_add(libxl__egc *egc, uint32_t domid,
          }
@@ -144,32 +144,22 @@ index bc5843b13701..c473fe650f2a 100644
 +        return;
 +    }
 +
-     rc = libxl__device_pci_setdefault(gc, domid, pcidev, !starting);
+     rc = libxl__device_pci_setdefault(gc, domid, pci, !starting);
      if (rc) goto out;
  
 @@ -1598,8 +1601,7 @@ void libxl__device_pci_add(libxl__egc *egc, uint32_t domid,
  
-     libxl__device_pci_reset(gc, pcidev->domain, pcidev->bus, pcidev->dev, pcidev->func);
+     libxl__device_pci_reset(gc, pci->domain, pci->bus, pci->dev, pci->func);
  
 -    stubdomid = libxl_get_stubdom_id(ctx, domid);
 -    if (stubdomid != 0) {
 +    if (stubdomid != 0 && !starting) {
-         libxl_device_pci *pcidev_s;
+         pas->callback = device_pci_add_stubdom_wait;
  
-         GCNEW(pcidev_s);
-@@ -1737,9 +1739,9 @@ typedef struct {
- 
- static void add_pcidevs_done(libxl__egc *, libxl__multidev *, int rc);
- 
--static void libxl__add_pcidevs(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
--                               libxl_domain_config *d_config,
--                               libxl__multidev *multidev)
-+void libxl__add_pcidevs(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
-+                        libxl_domain_config *d_config,
-+                        libxl__multidev *multidev)
- {
-     AO_GC;
-     add_pcidevs_state *apds;
+         do_pci_add(egc, stubdomid, pas); /* must be last */
+@@ -1799,1 +1799,1 @@
+-static void libxl__add_pcis(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
++void libxl__add_pcis(libxl__egc *egc, libxl__ao *ao, uint32_t domid,
 -- 
 2.31.1
 

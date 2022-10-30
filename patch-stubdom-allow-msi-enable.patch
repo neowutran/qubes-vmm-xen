@@ -1,5 +1,5 @@
---- a/tools/libxl/libxl_pci.c
-+++ b/tools/libxl/libxl_pci.c
+--- a/tools/libs/light/libxl_pci.c
++++ b/tools/libs/light/libxl_pci.c
 @@ -1421,6 +1421,17 @@ static int do_pci_add(libxl__gc *gc, uin
              rc = ERROR_FAIL;
              goto out;

@@ -26,10 +26,10 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
  tools/libxl/libxl_internal.h |  1 +
  2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/tools/libxl/libxl_device.c b/tools/libxl/libxl_device.c
+diff --git a/tools/libs/light/libxl_device.c b/tools/libs/light/libxl_device.c
 index 36c4e41e4dc1..5d92b6a75564 100644
---- a/tools/libxl/libxl_device.c
-+++ b/tools/libxl/libxl_device.c
+--- a/tools/libs/light/libxl_device.c
++++ b/tools/libs/light/libxl_device.c
 @@ -75,6 +75,25 @@ char *libxl__device_libxl_path(libxl__gc *gc, libxl__device *device)
                       device->devid);
  }
@@ -83,10 +83,10 @@ index 36c4e41e4dc1..5d92b6a75564 100644
      libxl_dominfo_init(&info);
  
      rc = libxl__get_domid(gc, &my_domid);
-diff --git a/tools/libxl/libxl_internal.h b/tools/libxl/libxl_internal.h
+diff --git a/tools/libs/light/libxl_internal.h b/tools/libs/light/libxl_internal.h
 index 0b4671318c82..b22c739643af 100644
---- a/tools/libxl/libxl_internal.h
-+++ b/tools/libxl/libxl_internal.h
+--- a/tools/libs/light/libxl_internal.h
++++ b/tools/libs/light/libxl_internal.h
 @@ -1525,6 +1525,7 @@ _hidden char *libxl__domain_device_backend_path(libxl__gc *gc, uint32_t backend_
  _hidden char *libxl__device_libxl_path(libxl__gc *gc, libxl__device *device);
  _hidden char *libxl__domain_device_libxl_path(libxl__gc *gc, uint32_t domid, uint32_t devid,

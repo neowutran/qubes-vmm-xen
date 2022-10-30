@@ -20,10 +20,10 @@ Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
  tools/libxl/libxl_device.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/tools/libxl/libxl_device.c b/tools/libxl/libxl_device.c
+diff --git a/tools/libs/light/libxl_device.c b/tools/libs/light/libxl_device.c
 index 0381c5d50947..3d2051354f6b 100644
---- a/tools/libxl/libxl_device.c
-+++ b/tools/libxl/libxl_device.c
+--- a/tools/libs/light/libxl_device.c
++++ b/tools/libs/light/libxl_device.c
 @@ -763,6 +763,12 @@ int libxl__device_destroy(libxl__gc *gc, libxl__device *dev)
               * from the backend path.
               */

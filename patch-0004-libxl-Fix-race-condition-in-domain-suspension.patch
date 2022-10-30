@@ -19,10 +19,10 @@ Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
  tools/libxl/libxl_dom_suspend.c | 15 +++++++++++----
  1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/tools/libxl/libxl_dom_suspend.c b/tools/libxl/libxl_dom_suspend.c
+diff --git a/tools/libs/light/libxl_dom_suspend.c b/tools/libs/light/libxl_dom_suspend.c
 index d276b3c17e70105c19c82e9da570a24297d039f5..42c0e0a152e04fab34152d711564ffe148f24a4c 100644
---- a/tools/libxl/libxl_dom_suspend.c
-+++ b/tools/libxl/libxl_dom_suspend.c
+--- a/tools/libs/light/libxl_dom_suspend.c
++++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -209,7 +209,8 @@ static void domain_suspend_common_wait_guest_evtchn(libxl__egc *egc,
          libxl__ev_evtchn *evev);
  static void suspend_common_wait_guest_watch(libxl__egc *egc,
