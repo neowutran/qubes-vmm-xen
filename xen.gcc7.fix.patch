@@ -1,0 +1,12 @@
+--- xen-4.8.0/extras/mini-os/Makefile.orig	2016-09-28 12:09:38.000000000 +0100
++++ xen-4.8.0/extras/mini-os/Makefile	2017-02-15 21:15:19.340197960 +0000
+@@ -142,6 +142,9 @@
+ APP_LDLIBS += -lz
+ APP_LDLIBS += -lm
+ LDLIBS += -lc
++ifeq ($(MINIOS_TARGET_ARCH),x86_32)
++LDLIBS += -L$(shell dirname `gcc -m32 -print-libgcc-file-name`) -lgcc
++endif
+ endif
+ 
+ ifneq ($(APP_OBJS)-$(lwip),-y)

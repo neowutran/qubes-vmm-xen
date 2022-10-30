@@ -1,0 +1,8 @@
+--- xen-4.11.0-rc7/tools/qemu-xen-traditional/i386-dm/qemu-ifup-Linux.orig	2017-09-15 19:37:27.000000000 +0100
++++ xen-4.11.0-rc7/tools/qemu-xen-traditional/i386-dm/qemu-ifup-Linux	2018-07-03 20:17:52.934780235 +0100
+@@ -34,4 +34,4 @@
+ fi
+ 
+ ifconfig $1 0.0.0.0 up
+-brctl addif $bridge $1 || true
++ip link set $1 master $bridge || true

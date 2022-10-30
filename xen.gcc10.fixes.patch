@@ -1,0 +1,10 @@
+--- xen-4.13.0/tools/xenpmd/Makefile.orig	2019-12-17 14:23:09.000000000 +0000
++++ xen-4.13.0/tools/xenpmd/Makefile	2020-01-22 22:13:16.564873608 +0000
+@@ -3,6 +3,7 @@
+ 
+ CFLAGS += -Werror
+ CFLAGS += $(CFLAGS_libxenstore)
++CFLAGS += -Wno-error=format-truncation
+ 
+ LDLIBS += $(LDLIBS_libxenstore)
+ 

@@ -1,0 +1,109 @@
+--- xen-4.9.0-rc1.2/tools/xenstore/xenstored_watch.c.orig	2017-04-12 16:18:57.000000000 +0100
++++ xen-4.9.0-rc1.2/tools/xenstore/xenstored_watch.c	2017-04-13 21:17:12.255231094 +0100
+@@ -215,7 +215,7 @@
+ 			goto inval;
+ 	} else {
+ 		*relative = !strstarts(*path, "/");
+-		*path = canonicalize(conn, ctx, *path);
++		*path = xenstore_canonicalize(conn, ctx, *path);
+ 		if (!*path)
+ 			return errno;
+ 		if (!is_valid_nodename(*path))
+@@ -305,7 +305,7 @@
+ 	if (get_strings(in, vec, ARRAY_SIZE(vec)) != ARRAY_SIZE(vec))
+ 		return EINVAL;
+ 
+-	node = canonicalize(conn, in, vec[0]);
++	node = xenstore_canonicalize(conn, in, vec[0]);
+ 	if (!node)
+ 		return ENOMEM;
+ 	list_for_each_entry(watch, &conn->watches, list) {
+--- xen-4.9.0-rc1.2/tools/xenstore/xenstored_core.c.orig	2017-04-12 16:18:57.000000000 +0100
++++ xen-4.9.0-rc1.2/tools/xenstore/xenstored_core.c	2017-04-13 21:19:35.668429881 +0100
+@@ -777,7 +777,7 @@
+ 	return strings;
+ }
+ 
+-char *canonicalize(struct connection *conn, const void *ctx, const char *node)
++char *xenstore_canonicalize(struct connection *conn, const void *ctx, const char *node)
+ {
+ 	const char *prefix;
+ 
+@@ -874,7 +874,7 @@
+ 
+ 	if (!canonical_name)
+ 		canonical_name = &tmp_name;
+-	*canonical_name = canonicalize(conn, ctx, name);
++	*canonical_name = xenstore_canonicalize(conn, ctx, name);
+ 	if (!*canonical_name)
+ 		return NULL;
+ 	return get_node(conn, ctx, *canonical_name, perm);
+--- xen-4.8.0/tools/console/testsuite/console-dom0.c.orig	2016-12-05 12:03:27.000000000 +0000
++++ xen-4.8.0/tools/console/testsuite/console-dom0.c	2017-02-26 21:52:24.554678631 +0000
+@@ -18,7 +18,7 @@
+ 	}
+ }
+ 
+-static void canonicalize(char *buffer)
++static void xenstore_canonicalize(char *buffer)
+ {
+ 	char *reader, *writer;
+ 
+@@ -51,7 +51,7 @@
+ 	tcsetattr(STDOUT_FILENO, TCSAFLUSH, &term);
+ 
+ 	while ((line = fgets(buffer, sizeof(buffer), stdin))) {
+-		canonicalize(line);
++		xenstore_canonicalize(line);
+ 
+ 		if (strcmp(line, "!!!XEN Test Begin!!!\n") == 0) {
+ 			break;
+@@ -76,7 +76,7 @@
+ 		return 1;
+ 	}
+ 
+-	canonicalize(line);
++	xenstore_canonicalize(line);
+ 	if (strcmp(line, "Seed Okay.\n") != 0) {
+ 		fprintf(stderr, "Incorrect seed acknowledgement.\n");
+ 		fprintf(stderr, "[%s]", line);
+@@ -104,7 +104,7 @@
+ 				return 1;
+ 			}
+ 
+-			canonicalize(line);
++			xenstore_canonicalize(line);
+ 			fprintf(stderr, "%s", line);
+ 		} while (strcmp(line, "Okay.\n") != 0);
+ 
+--- xen-4.8.0/tools/console/testsuite/console-domU.c.orig	2016-12-05 12:03:27.000000000 +0000
++++ xen-4.8.0/tools/console/testsuite/console-domU.c	2017-02-26 21:52:50.320622804 +0000
+@@ -6,7 +6,7 @@
+ #include <termios.h>
+ #include <unistd.h>
+ 
+-static void canonicalize(char *buffer)
++static void xenstore_canonicalize(char *buffer)
+ {
+ 	char *reader, *writer;
+ 
+@@ -45,7 +45,7 @@
+ 		return 1;
+ 	}
+ 
+-	canonicalize(line);
++	xenstore_canonicalize(line);
+ 	seed = strtoul(line, 0, 0);
+ 
+ 	printf("Seed Okay.\n"); fflush(stdout);
+--- xen-4.14.1/tools/xenstore/xenstored_core.h.orig	2020-12-17 16:47:25.000000000 +0000
++++ xen-4.14.1/tools/xenstore/xenstored_core.h	2020-12-17 20:13:10.806887309 +0000
+@@ -153,7 +153,7 @@
+ void send_ack(struct connection *conn, enum xsd_sockmsg_type type);
+ 
+ /* Canonicalize this path if possible. */
+-char *canonicalize(struct connection *conn, const void *ctx, const char *node);
++char *xenstore_canonicalize(struct connection *conn, const void *ctx, const char *node);
+ 
+ /* Get access permissions. */
+ unsigned int perm_for_conn(struct connection *conn,
