@@ -302,15 +302,15 @@ tools, needed to manage virtual machines running under the
 Xen hypervisor
 
 # BEGIN QUBES SPECIFIC PART
-%package -n python%{python3_pkgversion}-%{name}
-Summary: python%{python3_pkgversion} bindings for Xen tools
+%package -n python3-%{name}
+Summary: python3 bindings for Xen tools
 Group: Development/Libraries
 Requires: xen-libs = %{epoch}:%{version}-%{release}
-Requires: python%{python3_pkgversion}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+Requires: python3
+%{?python_provide:%python_provide python3-%{name}}
 
-%description -n python%{python3_pkgversion}-%{name}
-This package contains python%{python3_pkgversion} bindings to Xen tools. Especially xen.lowlevel.xs
+%description -n python3-%{name}
+This package contains python3 bindings to Xen tools. Especially xen.lowlevel.xs
 and xen.lowlevel.xc modules.
 # END QUBES SPECIFIC PART
 
@@ -858,8 +858,12 @@ fi
 %files
 %doc COPYING README
 %{_bindir}/xencons
+
+# BEGIN QUBES SPECIFIC PART
+%files -n python%{python3_pkgversion}-%{name}
 %{python3_sitearch}/%{name}
 %{python3_sitearch}/xen-*.egg-info
+# END QUBES SPECIFIC PART
 
 # Guest autostart links
 %dir %attr(0700,root,root) %{_sysconfdir}/%{name}/auto
