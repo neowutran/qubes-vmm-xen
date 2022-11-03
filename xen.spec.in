@@ -8,10 +8,12 @@
 %define build_ocaml %(test -x %{_bindir}/ocamlopt && echo %{with_ocaml} || echo 0)
 # Build with docs unless rpmbuild was run with --without docs
 %define build_docs %{?_without_docs: 0} %{?!_without_docs: 1}
-# Build with stubdom unless rpmbuild was run with --without stubdom
-%define build_stubdom %{?_without_stubdom: 0} %{?!_without_stubdom: 1}
-# Only build with qemu-traditional if rpmbuild was run with --with qemutrad
+
+# Build without stubdom unless rpmbuild was run with --with stubdom
+%define build_stubdom %{?_with_stubdom: 1} %{?!_with_stubdom: 0}
+# Build without qemu-traditional unless rpmbuild was run with --with qemutrad
 %define build_qemutrad %{?_with_qemutrad: 1} %{?!_with_qemutrad: 0}
+
 # build with ovmf from edk2-ovmf unless rpmbuild was run with --without ovmf
 %define build_ovmf %{?_without_ovmf: 0} %{?!_without_ovmf: 1}
 # set to 0 for archs that don't use qemu or ovmf (reduces build dependencies)
