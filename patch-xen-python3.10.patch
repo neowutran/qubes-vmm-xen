@@ -1,0 +1,24 @@
+diff --git a/tools/python/xen/lowlevel/xc/xc.c b/tools/python/xen/lowlevel/xc/xc.c
+index fd008610..9466df0d 100644
+--- a/tools/python/xen/lowlevel/xc/xc.c
++++ b/tools/python/xen/lowlevel/xc/xc.c
+@@ -4,6 +4,7 @@
+  * Copyright (c) 2003-2004, K A Fraser (University of Cambridge)
+  */
+ 
++#define PY_SSIZE_T_CLEAN
+ #include <Python.h>
+ #define XC_WANT_COMPAT_MAP_FOREIGN_API
+ #include <xenctrl.h>
+diff --git a/tools/python/xen/lowlevel/xs/xs.c b/tools/python/xen/lowlevel/xs/xs.c
+index 0dad7fa5..9e2fba6c 100644
+--- a/tools/python/xen/lowlevel/xs/xs.c
++++ b/tools/python/xen/lowlevel/xs/xs.c
+@@ -18,6 +18,7 @@
+  * Copyright (C) 2005 XenSource Ltd.
+  */
+ 
++#define PY_SSIZE_T_CLEAN
+ #include <Python.h>
+ 
+ #include <stdbool.h>
