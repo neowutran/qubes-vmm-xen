@@ -71,12 +71,12 @@ URL:     http://xen.org/
 Source0: https://downloads.xenproject.org/release/xen/%{upstream_version}/xen-%{upstream_version}.tar.gz
 Source2: %{name}.logrotate
 # used by stubdoms
-Source10: lwip-1.3.0.tar.gz
-Source11: newlib-1.16.0.tar.gz
-Source12: zlib-1.2.3.tar.gz
-Source13: pciutils-2.2.9.tar.bz2
-Source14: grub-0.97.tar.gz
-Source15: polarssl-1.1.4-gpl.tgz
+#Source10: lwip-1.3.0.tar.gz
+#Source11: newlib-1.16.0.tar.gz
+#Source12: zlib-1.2.3.tar.gz
+#Source13: pciutils-2.2.9.tar.bz2
+#Source14: grub-0.97.tar.gz
+#Source15: polarssl-1.1.4-gpl.tgz
 # .config file for xen hypervisor
 Source21: xen.hypervisor.config
 Source32: xen.modules-load.conf
@@ -440,7 +440,7 @@ Just a few xenstore-* tools and Xen hotplug scripts needed by Qubes VMs
 %autosetup -p1 -n %{name}-%{upstream_version}
 
 # stubdom sources
-cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} stubdom
+#cp -v %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{SOURCE15} stubdom
 # copy xen hypervisor .config file to change settings
 cp -v %{SOURCE21} xen/.config
 
