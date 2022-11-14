@@ -1,5 +1,5 @@
 diff --git a/tools/python/xen/lowlevel/xc/xc.c b/tools/python/xen/lowlevel/xc/xc.c
-index fd008610..9466df0d 100644
+index fd008610..c0525378 100644
 --- a/tools/python/xen/lowlevel/xc/xc.c
 +++ b/tools/python/xen/lowlevel/xc/xc.c
 @@ -4,6 +4,7 @@
@@ -10,8 +10,26 @@ index fd008610..9466df0d 100644
  #include <Python.h>
  #define XC_WANT_COMPAT_MAP_FOREIGN_API
  #include <xenctrl.h>
+@@ -1774,7 +1775,7 @@ static PyObject *pyflask_load(PyObject *self, PyObject *args, PyObject *kwds)
+ {
+     xc_interface *xc_handle;
+     char *policy;
+-    uint32_t len;
++    Py_ssize_t len;
+     int ret;
+ 
+     static char *kwd_list[] = { "policy", NULL };
+@@ -1787,7 +1788,7 @@ static PyObject *pyflask_load(PyObject *self, PyObject *args, PyObject *kwds)
+         return PyErr_SetFromErrno(xc_error_obj);
+     }
+ 
+-    ret = xc_flask_load(xc_handle, policy, len);
++    ret = xc_flask_load(xc_handle, policy, (uint32_t) len);
+ 
+     xc_interface_close(xc_handle);
+ 
 diff --git a/tools/python/xen/lowlevel/xs/xs.c b/tools/python/xen/lowlevel/xs/xs.c
-index 0dad7fa5..9e2fba6c 100644
+index 0dad7fa5..d99058c6 100644
 --- a/tools/python/xen/lowlevel/xs/xs.c
 +++ b/tools/python/xen/lowlevel/xs/xs.c
 @@ -18,6 +18,7 @@
@@ -22,3 +40,21 @@ index 0dad7fa5..9e2fba6c 100644
  #include <Python.h>
  
  #include <stdbool.h>
+@@ -141,7 +142,7 @@ static PyObject *xspy_write(XsHandle *self, PyObject *args)
+     char *thstr;
+     char *path;
+     char *data;
+-    int data_n;
++    Py_ssize_t data_n;
+     bool result;
+ 
+     if (!xh)
+@@ -152,7 +153,7 @@ static PyObject *xspy_write(XsHandle *self, PyObject *args)
+     th = strtoul(thstr, NULL, 16);
+ 
+     Py_BEGIN_ALLOW_THREADS
+-    result = xs_write(xh, th, path, data, data_n);
++    result = xs_write(xh, th, path, data, (int)data_n);
+     Py_END_ALLOW_THREADS
+ 
+     return none(result);
