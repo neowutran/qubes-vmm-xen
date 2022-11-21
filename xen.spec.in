@@ -670,8 +670,10 @@ mkdir -p %{buildroot}%{_localstatedir}/log/xen/console
 ln -s %{_libexecdir}/%{name} %{buildroot}/%{_libdir}/%{name}
 %endif
 
-############ create symlink to qemu-system-i386 in /usr/bin ############
-ln -s /usr/bin/qemu-system-i386 %{buildroot}/%{_libexecdir}/%{name}/bin/qemu-system-i386
+# BEGIN QUBES SPECIFIC PART
+# don't create symlink to qemu-system-i386
+ln -s ../sbin/xl %{buildroot}/%{_bindir}/xl
+# END QUBES SPECIFIC PART
 
 ############ debug packaging: list files ############
 
@@ -711,21 +713,30 @@ fi
 
 %post runtime
 %if %with_systemd_presets
-%systemd_post xenstored.service xenconsoled.service
+%systemd_post xenstored.service xenconsoled.service xen-init-dom0.service
 %else
 if [ $1 == 1 ]; then
   /bin/systemctl enable xenstored.service
   /bin/systemctl enable xenconsoled.service
+  /bin/systemctl enable xen-init-dom0.service
 fi
 %endif
 
+%post qubes-vm
+# Unconditionally enable this service in Qubes VM
+systemctl enable xendriverdomain.service >/dev/null 2>&1 || :
+
+%preun qubes-vm
+%systemd_preun xendriverdomain.service
+
 %preun runtime
 %if %with_systemd_presets
-%systemd_preun xenstored.service xenconsoled.service
+%systemd_preun xenstored.service xenconsoled.service xen-init-dom0.service
 %else
 if [ $1 == 0 ]; then
   /bin/systemctl disable xenstored.service
   /bin/systemctl disable xenconsoled.service
+  /bin/systemctl disable xen-init-dom0.service
 fi
 %endif
 
@@ -918,6 +929,10 @@ fi
 %{_unitdir}/xenstored.service
 %{_unitdir}/xenconsoled.service
 %{_unitdir}/xen-watchdog.service
+# BEGIN QUBES SPECIFIC PART
+%{_unitdir}/xen-init-dom0.service
+%exclude %{_unitdir}/xendriverdomain.service
+# END QUBES SPECIFIC PART
 %{_unitdir}/xen-qemu-dom0-disk-backend.service
 %{_unitdir}/xendriverdomain.service
 /usr/lib/modules-load.d/xen.conf
@@ -942,6 +957,11 @@ fi
 %{_datadir}/%{name}/qemu/keymaps/*
 %endif
 %endif
+# BEGIN QUBES SPECIFIC PART
+%dir %{_datadir}/qemu-xen
+%dir %{_datadir}/qemu-xen/qemu
+%{_datadir}/qemu-xen/qemu/*
+# END QUBES SPECIFIC PART
 
 # man pages
 %if %build_docs
@@ -1063,6 +1083,9 @@ fi
 %{_bindir}/vchan-socket-proxy
 %{_sbindir}/xenhypfs
 %{_sbindir}/xen-access
+# BEGIN QUBES SPECIFIC PART
+%{_bindir}/xl
+# END QUBES SPECIFIC PART
 
 # Xen logfiles
 %dir %attr(0700,root,root) %{_localstatedir}/log/xen
