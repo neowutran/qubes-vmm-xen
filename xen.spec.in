@@ -539,6 +539,13 @@ XEN_TARGET_ARCH=x86_32 make -C stubdom pv-grub-if-enabled
 
 
 %install
+#export XEN_VENDORVERSION="-%{release}"
+export EXTRA_CFLAGS_XEN_TOOLS="$RPM_OPT_FLAGS"
+export EXTRA_CFLAGS_QEMU_TRADITIONAL="$RPM_OPT_FLAGS"
+export EXTRA_CFLAGS_QEMU_XEN="$RPM_OPT_FLAGS"
+export PATH="/usr/bin:$PATH"
+export KCONFIG_CONFIG=%{SOURCE21}
+export XEN_CONFIG_EXPERT=y
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
 cp -prlP dist/install/* %{buildroot}
@@ -548,6 +555,7 @@ make DESTDIR=%{buildroot} %{?ocaml_flags} prefix=/usr install-stubdom
 %endif
 %endif
 %if %build_efi
+mkdir -p %{buildroot}/boot/efi/efi/qubes
 mv %{buildroot}/boot/efi/efi %{buildroot}/boot/efi/EFI
 %endif
 %if %build_xsm
@@ -556,6 +564,7 @@ mkdir %{buildroot}/boot/flask
 mv %{buildroot}/boot/xenpolicy* %{buildroot}/boot/flask
 %else
 rm -f %{buildroot}/boot/xenpolicy*
+rm -f %{buildroot}/usr/sbin/flask-*
 %endif
 
 ############ debug packaging: list files ############
@@ -694,23 +703,25 @@ done
 
 ############ all done now ############
 
-%post
-%if %with_systemd_presets
-%systemd_post xendomains.service
-%else
-if [ $1 == 1 ]; then
-  /bin/systemctl enable xendomains.service
-fi
-%endif
+# BEGIN QUBES SPECIFIC PART
+# %post
+# %if %with_systemd_presets
+# %systemd_post xendomains.service
+# %else
+# if [ $1 == 1 ]; then
+#   /bin/systemctl enable xendomains.service
+# fi
+# %endif
 
-%preun
-%if %with_systemd_presets
-%systemd_preun xendomains.service
-%else
-if [ $1 == 0 ]; then
-/bin/systemctl disable xendomains.service
-fi
-%endif
+# %preun
+# %if %with_systemd_presets
+# %systemd_preun xendomains.service
+# %else
+# if [ $1 == 0 ]; then
+# /bin/systemctl disable xendomains.service
+# fi
+# %endif
+# END QUBES SPECIFIC PART
 
 %post runtime
 %if %with_systemd_presets
