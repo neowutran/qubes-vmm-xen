@@ -713,12 +713,11 @@ fi
 
 %post runtime
 %if %with_systemd_presets
-%systemd_post xenstored.service xenconsoled.service xen-init-dom0.service
+%systemd_post xenstored.service xenconsoled.service 
 %else
 if [ $1 == 1 ]; then
   /bin/systemctl enable xenstored.service
   /bin/systemctl enable xenconsoled.service
-  /bin/systemctl enable xen-init-dom0.service
 fi
 %endif
 
@@ -731,12 +730,11 @@ systemctl enable xendriverdomain.service >/dev/null 2>&1 || :
 
 %preun runtime
 %if %with_systemd_presets
-%systemd_preun xenstored.service xenconsoled.service xen-init-dom0.service
+%systemd_preun xenstored.service xenconsoled.service 
 %else
 if [ $1 == 0 ]; then
   /bin/systemctl disable xenstored.service
   /bin/systemctl disable xenconsoled.service
-  /bin/systemctl disable xen-init-dom0.service
 fi
 %endif
 
@@ -930,11 +928,9 @@ fi
 %{_unitdir}/xenconsoled.service
 %{_unitdir}/xen-watchdog.service
 # BEGIN QUBES SPECIFIC PART
-%{_unitdir}/xen-init-dom0.service
 %exclude %{_unitdir}/xendriverdomain.service
 # END QUBES SPECIFIC PART
 %{_unitdir}/xen-qemu-dom0-disk-backend.service
-%{_unitdir}/xendriverdomain.service
 /usr/lib/modules-load.d/xen.conf
 
 %config(noreplace) %{_sysconfdir}/sysconfig/xencommons
@@ -957,11 +953,6 @@ fi
 %{_datadir}/%{name}/qemu/keymaps/*
 %endif
 %endif
-# BEGIN QUBES SPECIFIC PART
-%dir %{_datadir}/qemu-xen
-%dir %{_datadir}/qemu-xen/qemu
-%{_datadir}/qemu-xen/qemu/*
-# END QUBES SPECIFIC PART
 
 # man pages
 %if %build_docs
