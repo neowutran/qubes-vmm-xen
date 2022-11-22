@@ -83,7 +83,7 @@ Patch42: xen.gcc10.fixes.patch
 Patch43: xen.gcc11.fixes.patch
 Patch44: xsa376.patch
 Patch45: xen.gcc12.fixes.patch
-Patch46: xen.efi.build.patch
+Patch46: patch-xen-efi-build.patch
 
 # Out-of-tree patches.
 #
