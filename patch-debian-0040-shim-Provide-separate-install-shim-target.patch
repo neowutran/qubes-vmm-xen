@@ -42,12 +42,10 @@ so it is OK to call on ARM.
 What a mess.
 
 Signed-off-by: Ian Jackson <ijackson@chiark.greenend.org.uk>
----
- tools/firmware/Makefile | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
 
+-----------
 diff --git a/tools/firmware/Makefile b/tools/firmware/Makefile
-index d6104e6..c449fab 100644
+index 1f27117..bbfd141 100644
 --- a/tools/firmware/Makefile
 +++ b/tools/firmware/Makefile
 @@ -43,6 +43,13 @@ ifeq ($(CONFIG_ROMBIOS),y)
@@ -64,7 +62,7 @@ index d6104e6..c449fab 100644
  .PHONY: install
  install: all
  	[ -d $(INST_DIR) ] || $(INSTALL_DIR) $(INST_DIR)
-@@ -55,10 +61,7 @@ endif
+@@ -57,10 +64,7 @@ endif
  ifeq ($(CONFIG_IPXE),y)
  	$(INSTALL_DATA) etherboot/ipxe/src/bin/ipxe.bin $(INST_DIR)/ipxe.bin
  endif
@@ -76,3 +74,4 @@ index d6104e6..c449fab 100644
  
  .PHONY: uninstall
  uninstall:
+-----------------

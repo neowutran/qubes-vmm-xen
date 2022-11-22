@@ -1,9 +1,13 @@
+
+index 6e308ed7..9783b9cc 100755
+
+-----------
 diff --git a/tools/qemu-xen/configure b/tools/qemu-xen/configure
 index 6e308ed7..9783b9cc 100755
 --- a/tools/qemu-xen/configure
 +++ b/tools/qemu-xen/configure
 @@ -2280,9 +2280,9 @@ fi
-
+ 
  # Detect support for PT_GNU_RELRO + DT_BIND_NOW.
  # The combination is known as "full relro", because .got.plt is read-only too.
 -if compile_prog "" "-Wl,-z,relro -Wl,-z,now" ; then
@@ -12,6 +16,7 @@ index 6e308ed7..9783b9cc 100755
 +#if compile_prog "" "-Wl,-z,relro -Wl,-z,now" ; then
 +#  QEMU_LDFLAGS="-Wl,-z,relro -Wl,-z,now $QEMU_LDFLAGS"
 +#fi
-
+ 
  ##########################################
  # __sync_fetch_and_and requires at least -march=i486. Many toolchains
+-----------------

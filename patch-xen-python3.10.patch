@@ -1,3 +1,7 @@
+
+index fd008610..c0525378 100644
+
+-----------
 diff --git a/tools/python/xen/lowlevel/xc/xc.c b/tools/python/xen/lowlevel/xc/xc.c
 index fd008610..c0525378 100644
 --- a/tools/python/xen/lowlevel/xc/xc.c
@@ -58,3 +62,4 @@ index 0dad7fa5..d99058c6 100644
      Py_END_ALLOW_THREADS
  
      return none(result);
+-----------------

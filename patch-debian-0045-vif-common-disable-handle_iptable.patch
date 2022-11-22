@@ -18,10 +18,8 @@ could provide some anti mac/ip spoofing in the dom0. It does not seem to
 be a trivial thing to do, since it requires having quite some knowledge
 about what the domU is allowed to do or not (e.g. a domU can be a
 router...).
----
- tools/hotplug/Linux/vif-common.sh | 3 +++
- 1 file changed, 3 insertions(+)
 
+-----------
 diff --git a/tools/hotplug/Linux/vif-common.sh b/tools/hotplug/Linux/vif-common.sh
 index a8e6517..14cd44c 100644
 --- a/tools/hotplug/Linux/vif-common.sh
@@ -36,3 +34,4 @@ index a8e6517..14cd44c 100644
    # Check for a working iptables installation.  Checking for the iptables
    # binary is not sufficient, because the user may not have the appropriate
    # modules installed.  If iptables is not working, then there's no need to do
+-----------------

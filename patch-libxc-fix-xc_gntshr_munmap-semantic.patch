@@ -11,15 +11,14 @@ This patch fixes also the only user of this function (in xen sources) -
 libvchan.
 
 Signed-off-by: Marek Marczykowski <marmarek@invisiblethingslab.com>
----
- tools/libvchan/io.c          | 10 ++++++----
- 3 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/tools/libs/vchan/io.c b/tools/vchan/io.c
-index 3c8d236..3040099 100644
+
+-----------
+diff --git a/tools/libs/vchan/io.c b/tools/libs/vchan/io.c
+index da303fb..75c1a45 100644
 --- a/tools/libs/vchan/io.c
 +++ b/tools/libs/vchan/io.c
-@@ -324,9 +324,11 @@ void libxenvchan_close(struct libxenvchan *ctrl)
+@@ -360,9 +360,11 @@ void libxenvchan_close(struct libxenvchan *ctrl)
  	if (!ctrl)
  		return;
  	if (ctrl->read.order >= PAGE_SHIFT)
@@ -33,6 +32,4 @@ index 3c8d236..3040099 100644
  	if (ctrl->ring) {
  		if (ctrl->is_server) {
  			ctrl->ring->srv_live = 0;
--- 
-1.8.1.4
-
+-----------------

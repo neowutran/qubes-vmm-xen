@@ -1,10 +1,16 @@
---- a/xen/arch/x86/xen.lds.S	2022-02-16 23:32:39.219000000 +0100
-+++ b/xen/arch/x86/xen.lds.S	2022-02-16 23:32:26.884000000 +0100
-@@ -156,6 +156,7 @@
+
+
+-----------
+diff --git a/xen/arch/x86/xen.lds.S b/xen/arch/x86/xen.lds.S
+index bc9b9651..2f1c1210 100644
+--- a/xen/arch/x86/xen.lds.S
++++ b/xen/arch/x86/xen.lds.S
+@@ -166,6 +166,7 @@ SECTIONS
         __note_gnu_build_id_end = .;
-   } :note :text
+   } PHDR(note) PHDR(text)
  #elif defined(BUILD_ID_EFI)
 +  . = ALIGN(32);
    DECL_SECTION(.buildid) {
         __note_gnu_build_id_start = .;
         *(.buildid)
+-----------------

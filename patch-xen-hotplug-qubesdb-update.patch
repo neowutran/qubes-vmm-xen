@@ -1,9 +1,13 @@
 Update QubesDB entries of given device (and its partitions) when it's attached
 or detached to other VM. This is used to prevent accidential attachment of
 whole device and its partitions at the same time.
---- xen-4.6.1/tools/hotplug/Linux/block.orig	2016-05-16 03:38:46.950000000 +0200
-+++ xen-4.6.1/tools/hotplug/Linux/block	2016-05-16 03:52:27.934000000 +0200
-@@ -248,6 +248,12 @@
+
+-----------
+diff --git a/tools/hotplug/Linux/block b/tools/hotplug/Linux/block
+index dc446690..c0d509ef 100644
+--- a/tools/hotplug/Linux/block
++++ b/tools/hotplug/Linux/block
+@@ -281,6 +281,12 @@ case "$command" in
          check_device_sharing "$dev" "$mode"
  	write_dev "$dev"
          release_lock "block"
@@ -16,7 +20,7 @@ whole device and its partitions at the same time.
  	exit 0
  	;;
  
-@@ -330,8 +336,20 @@
+@@ -353,8 +359,20 @@ mount it read-write in a guest domain."
  
    remove)
      truetype=$(cat $HOTPLUG_STORE-type || echo $truetype)
@@ -37,3 +41,4 @@ whole device and its partitions at the same time.
  	exit 0
  	;;
  
+-----------------

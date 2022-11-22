@@ -12,15 +12,13 @@ Cc: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 They are not used anywhere, and are significant attack surface.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- xen/common/grant_table.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
+-----------
 diff --git a/xen/common/grant_table.c b/xen/common/grant_table.c
-index 7d464a964157..ce1912659229 100644
+index 4c742cd8..de14e6ee 100644
 --- a/xen/common/grant_table.c
 +++ b/xen/common/grant_table.c
-@@ -99,7 +99,7 @@ static unsigned int __read_mostly max_maptrack_frames =
+@@ -176,7 +176,7 @@ static int parse_gnttab_max_maptrack_frames(const char *arg)
  }
  
  #ifndef GNTTAB_MAX_VERSION
@@ -28,7 +26,5 @@ index 7d464a964157..ce1912659229 100644
 +#define GNTTAB_MAX_VERSION 1
  #endif
  
- static unsigned int __read_mostly opt_gnttab_max_version = GNTTAB_MAX_VERSION;
--- 
-2.31.1
-
+ unsigned int __read_mostly opt_gnttab_max_version = GNTTAB_MAX_VERSION;
+-----------------

@@ -17,12 +17,10 @@ client had reconnected. The marker is a one byte, and the user need to
 choose something that doesn't appear in the data stream elsewhere.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/vchan/vchan-socket-proxy.c | 51 +++++++++++++++++++++++++++++++-
- 1 file changed, 50 insertions(+), 1 deletion(-)
 
+-----------
 diff --git a/tools/vchan/vchan-socket-proxy.c b/tools/vchan/vchan-socket-proxy.c
-index e1d959c6d15c..006c84ad5970 100644
+index e1d959c6..1e7defe9 100644
 --- a/tools/vchan/vchan-socket-proxy.c
 +++ b/tools/vchan/vchan-socket-proxy.c
 @@ -31,6 +31,7 @@
@@ -141,6 +139,4 @@ index e1d959c6d15c..006c84ad5970 100644
              if (data_loop(&state) != 0)
                  break;
              /* don't reconnect if output was stdout */
--- 
-2.35.3
-
+-----------------

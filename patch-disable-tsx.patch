@@ -1,5 +1,9 @@
-diff --git a/xen/arch/x86/tsx.c b/xen/arch/x86/tsx.c
+
 index be89741a2f6d..10fa613969cf 100644
+
+-----------
+diff --git a/xen/arch/x86/tsx.c b/xen/arch/x86/tsx.c
+index be89741a..10fa6139 100644
 --- a/xen/arch/x86/tsx.c
 +++ b/xen/arch/x86/tsx.c
 @@ -18,7 +18,7 @@
@@ -11,20 +15,20 @@ index be89741a2f6d..10fa613969cf 100644
  int8_t __read_mostly cpu_has_tsx_ctrl = -1;
  bool __read_mostly rtm_disabled;
  
-@@ -198,6 +198,13 @@ void tsx_init(void)
+@@ -197,6 +197,13 @@ void tsx_init(void)
+         }
      }
  
-     /*
++    /*
 +     * Check bottom bit only.  Higher bits are various sentinels.  Performed
 +     * unconditionally so tsx=0 hides guest CPUID bits on HSX/BDX even without
 +     * MSRs to enforce the restriction.
 +     */
 +    rtm_disabled = !(opt_tsx & 1);
 +
-+    /*
+     /*
       * Note: MSR_TSX_CTRL is enumerated on TSX-enabled MDS_NO and later parts.
       * MSR_TSX_FORCE_ABORT is enumerated on TSX-enabled pre-MDS_NO Skylake
-      * parts only.  The two features are on a disjoint set of CPUs, and not
 @@ -222,9 +229,6 @@ void tsx_init(void)
  
          rdmsr(MSR_TSX_CTRL, lo, hi);
@@ -45,3 +49,4 @@ index be89741a2f6d..10fa613969cf 100644
          lo &= ~(TSX_FORCE_ABORT_RTM | TSX_CPUID_CLEAR | TSX_ENABLE_RTM);
  
          if ( cpu_has_rtm_always_abort )
+-----------------

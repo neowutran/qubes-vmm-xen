@@ -15,16 +15,14 @@ are already closed so just remove the devices, without waiting for
 (timeout on) backend state.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libs/light/libxl_pci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_pci.c b/tools/libs/light/libxl_pci.c
-index 61bef12..395ed6b 100644
+index ce3bf7c..f8953ed 100644
 --- a/tools/libs/light/libxl_pci.c
 +++ b/tools/libs/light/libxl_pci.c
-@@ -330,7 +330,7 @@ retry_transaction:
- static int libxl__device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libxl_device_pci *pcidev)
+@@ -226,7 +226,7 @@ out:
+ static int libxl__device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libxl_device_pci *pci)
  {
      libxl_ctx *ctx = libxl__gc_owner(gc);
 -    char *be_path, *num_devs_path, *num_devs, *xsdev, *tmp, *tmppath;
@@ -32,7 +30,7 @@ index 61bef12..395ed6b 100644
      int num, i, j;
      xs_transaction_t t;
  
-@@ -341,12 +341,13 @@ static int libxl_device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libxl
+@@ -237,12 +237,13 @@ static int libxl__device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libx
      if (!num_devs)
          return ERROR_INVAL;
      num = atoi(num_devs);
@@ -41,13 +39,13 @@ index 61bef12..395ed6b 100644
      libxl_domain_type domtype = libxl__domain_type(gc, domid);
      if (domtype == LIBXL_DOMAIN_TYPE_INVALID)
          return ERROR_FAIL;
-
+ 
 -    if (domtype == LIBXL_DOMAIN_TYPE_PV) {
 +    if (domtype == LIBXL_DOMAIN_TYPE_PV && state_before && atoi(state_before) != 6) {
          if (libxl__wait_for_backend(gc, be_path, GCSPRINTF("%d", XenbusStateConnected)) < 0) {
              LOGD(DEBUG, domid, "pci backend at %s is not ready", be_path);
              return ERROR_FAIL;
-@@ -363,6 +364,8 @@ static int libxl_device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libxl
+@@ -264,6 +265,8 @@ static int libxl__device_pci_remove_xenstore(libxl__gc *gc, uint32_t domid, libx
      }
  
  retry_transaction:
@@ -56,6 +54,4 @@ index 61bef12..395ed6b 100644
      t = xs_transaction_start(ctx->xsh);
      xs_write(ctx->xsh, t, GCSPRINTF("%s/state-%d", be_path, i), GCSPRINTF("%d", XenbusStateClosing), 1);
      xs_write(ctx->xsh, t, GCSPRINTF("%s/state", be_path), GCSPRINTF("%d", XenbusStateReconfiguring), 1);
--- 
-1.8.1.4
-
+-----------------

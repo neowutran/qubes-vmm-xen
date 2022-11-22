@@ -8,12 +8,10 @@ This is not wanted in Debian.  COPYING ends up in
 Patch-Name: tools-include-no-COPYING.diff
 
 Signed-off-by: Ian Jackson <ian.jackson@citrix.com>
----
- tools/include/Makefile | 2 --
- 1 file changed, 2 deletions(-)
 
+-----------
 diff --git a/tools/include/Makefile b/tools/include/Makefile
-index 42605d46..39c0ad37 100644
+index 42605d4..39c0ad3 100644
 --- a/tools/include/Makefile
 +++ b/tools/include/Makefile
 @@ -21,7 +21,6 @@ xen-foreign:
@@ -32,3 +30,4 @@ index 42605d46..39c0ad37 100644
  	$(INSTALL_DATA) xen/*.h $(DESTDIR)$(includedir)/xen
  	$(INSTALL_DATA) xen/arch-x86/*.h $(DESTDIR)$(includedir)/xen/arch-x86
  	$(INSTALL_DATA) xen/arch-x86/hvm/*.h $(DESTDIR)$(includedir)/xen/arch-x86/hvm
+-----------------

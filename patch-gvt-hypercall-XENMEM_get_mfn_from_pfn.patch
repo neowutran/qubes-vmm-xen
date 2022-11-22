@@ -8,12 +8,14 @@ goal.
 
 Signed-off-by: Wei Ye <wei.ye@intel.com>
 Signed-off-by: Yu Zhang <yu.c.zhang@intel.com>
+
+-----------
 diff --git a/xen/arch/x86/mm.c b/xen/arch/x86/mm.c
-index 5591a4d..0702172 100644
+index 5812321c..35718116 100644
 --- a/xen/arch/x86/mm.c
 +++ b/xen/arch/x86/mm.c
-@@ -4459,6 +4459,61 @@ int arch_acquire_resource(struct domain *d, unsigned int type,
-     return rc;
+@@ -4645,6 +4645,61 @@ static int handle_iomem_range(unsigned long s, unsigned long e, void *p)
+     return err || s > e ? err : _handle_iomem_range(s, e, p);
  }
  
 +static int get_mfn_from_pfn(XEN_GUEST_HANDLE(xen_get_mfn_from_pfn_t) arg)
@@ -74,7 +76,7 @@ index 5591a4d..0702172 100644
  long arch_memory_op(unsigned long cmd, XEN_GUEST_HANDLE_PARAM(void) arg)
  {
      int rc;
-@@ -4689,6 +4744,15 @@ long arch_memory_op(unsigned long cmd, XEN_GUEST_HANDLE_PARAM(void) arg)
+@@ -4863,6 +4918,15 @@ long arch_memory_op(unsigned long cmd, XEN_GUEST_HANDLE_PARAM(void) arg)
      }
  #endif
  
@@ -91,13 +93,14 @@ index 5591a4d..0702172 100644
          return subarch_memory_op(cmd, arg);
      }
 diff --git a/xen/include/public/memory.h b/xen/include/public/memory.h
-index 4ad7f6d..5567d95 100644
+index 383a9468..4e0cca84 100644
 --- a/xen/include/public/memory.h
 +++ b/xen/include/public/memory.h
-@@ -677,6 +677,29 @@ DEFINE_XEN_GUEST_HANDLE(xen_mem_acquire_resource_t);
+@@ -690,6 +690,29 @@ struct xen_mem_acquire_resource {
+ typedef struct xen_mem_acquire_resource xen_mem_acquire_resource_t;
  DEFINE_XEN_GUEST_HANDLE(xen_mem_acquire_resource_t);
  
- /*
++/*
 + * Translate the given guest PFNs to MFNs
 + */
 +#define XENMEM_get_mfn_from_pfn    29
@@ -120,7 +123,7 @@ index 4ad7f6d..5567d95 100644
 +typedef struct xen_get_mfn_from_pfn xen_get_mfn_from_pfn_t;
 +DEFINE_XEN_GUEST_HANDLE(xen_get_mfn_from_pfn_t);
 +
-+/*
+ /*
   * XENMEM_get_vnumainfo used by guest to get
   * vNUMA topology from hypervisor.
-  */
+-----------------

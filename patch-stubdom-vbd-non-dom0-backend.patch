@@ -1,8 +1,12 @@
 Index: xen-hvm/tools/qemu-xen-traditional/xenstore.c
 ===================================================================
---- xen-hvm.orig/tools/qemu-xen-traditional/xenstore.c
-+++ xen-hvm/tools/qemu-xen-traditional/xenstore.c
-@@ -248,7 +248,10 @@ static void xenstore_get_backend_path(ch
+
+-----------
+diff --git a/tools/qemu-xen-traditional/xenstore.c b/tools/qemu-xen-traditional/xenstore.c
+index 8af27151..ea3ad782 100644
+--- a/tools/qemu-xen-traditional/xenstore.c
++++ b/tools/qemu-xen-traditional/xenstore.c
+@@ -249,7 +249,10 @@ static void xenstore_get_backend_path(char **backend, const char *devtype,
      char *frontend_backend_path=0;
      char *backend_frontend_path=0;
      char *frontend_doublecheck=0;
@@ -13,7 +17,7 @@ Index: xen-hvm/tools/qemu-xen-traditional/xenstore.c
      const char *frontend_idpath_slash;
  
      /* clear out return value for if we error out */
-@@ -269,7 +272,13 @@ static void xenstore_get_backend_path(ch
+@@ -270,7 +273,13 @@ static void xenstore_get_backend_path(char **backend, const char *devtype,
                    frontend_path)
          == -1) goto out;
  
@@ -27,3 +31,4 @@ Index: xen-hvm/tools/qemu-xen-traditional/xenstore.c
  
      /* now we must check that the backend is intended for use
       * by this frontend, since the frontend's /backend xenstore node
+-----------------

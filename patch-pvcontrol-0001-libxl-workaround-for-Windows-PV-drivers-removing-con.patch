@@ -17,15 +17,13 @@ requests.
 Workaround the issue by explicitly setting permissions after the write.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl_domain.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_domain.c b/tools/libs/light/libxl_domain.c
-index 7f0986c18569..2f76e0067374 100644
+index f1f83b8d..bf951db3 100644
 --- a/tools/libs/light/libxl_domain.c
 +++ b/tools/libs/light/libxl_domain.c
-@@ -770,7 +770,12 @@ int libxl__domain_pvcontrol(libxl__egc *egc, libxl__xswait_state *pvcontrol,
+@@ -771,7 +771,12 @@ int libxl__domain_pvcontrol(libxl__egc *egc, libxl__xswait_state *pvcontrol,
                              domid_t domid, const char *cmd)
  {
      STATE_AO_GC(pvcontrol->ao);
@@ -38,7 +36,7 @@ index 7f0986c18569..2f76e0067374 100644
      int rc;
  
      rc = libxl__domain_pvcontrol_available(gc, domid);
-@@ -784,9 +789,28 @@ int libxl__domain_pvcontrol(libxl__egc *egc, libxl__xswait_state *pvcontrol,
+@@ -785,9 +790,28 @@ int libxl__domain_pvcontrol(libxl__egc *egc, libxl__xswait_state *pvcontrol,
      if (!shutdown_path)
          return ERROR_FAIL;
  
@@ -69,6 +67,4 @@ index 7f0986c18569..2f76e0067374 100644
  
      pvcontrol->path = shutdown_path;
      pvcontrol->what = GCSPRINTF("guest acknowledgement of %s request", cmd);
--- 
-2.37.3
-
+-----------------

@@ -21,13 +21,10 @@ work outside the toolstack domain - specifically in the backend domain
 as part of the xendriverdomain service.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl_device.c   | 32 ++++++++++++++++++++++++++++++-
- tools/libxl/libxl_internal.h |  1 +
- 2 files changed, 32 insertions(+), 1 deletion(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_device.c b/tools/libs/light/libxl_device.c
-index 36c4e41e4dc1..5d92b6a75564 100644
+index fd0524bb..b30c685a 100644
 --- a/tools/libs/light/libxl_device.c
 +++ b/tools/libs/light/libxl_device.c
 @@ -75,6 +75,25 @@ char *libxl__device_libxl_path(libxl__gc *gc, libxl__device *device)
@@ -56,7 +53,7 @@ index 36c4e41e4dc1..5d92b6a75564 100644
  char *libxl__domain_device_libxl_path(libxl__gc *gc,  uint32_t domid, uint32_t devid,
                                        libxl__device_kind device_kind)
  {
-@@ -932,7 +951,7 @@ void libxl__initiate_device_generic_remove(libxl__egc *egc,
+@@ -938,7 +957,7 @@ void libxl__initiate_device_generic_remove(libxl__egc *egc,
  {
      STATE_AO_GC(aodev->ao);
      xs_transaction_t t = 0;
@@ -65,7 +62,7 @@ index 36c4e41e4dc1..5d92b6a75564 100644
      char *state_path = GCSPRINTF("%s/state", be_path);
      char *online_path = GCSPRINTF("%s/online", be_path);
      const char *state;
-@@ -940,6 +959,17 @@ void libxl__initiate_device_generic_remove(libxl__egc *egc,
+@@ -946,6 +965,17 @@ void libxl__initiate_device_generic_remove(libxl__egc *egc,
      uint32_t my_domid, domid = aodev->dev->domid;
      int rc = 0;
  
@@ -84,7 +81,7 @@ index 36c4e41e4dc1..5d92b6a75564 100644
  
      rc = libxl__get_domid(gc, &my_domid);
 diff --git a/tools/libs/light/libxl_internal.h b/tools/libs/light/libxl_internal.h
-index 0b4671318c82..b22c739643af 100644
+index 0b467131..b22c7396 100644
 --- a/tools/libs/light/libxl_internal.h
 +++ b/tools/libs/light/libxl_internal.h
 @@ -1525,6 +1525,7 @@ _hidden char *libxl__domain_device_backend_path(libxl__gc *gc, uint32_t backend_
@@ -95,6 +92,4 @@ index 0b4671318c82..b22c739643af 100644
  _hidden int libxl__parse_backend_path(libxl__gc *gc, const char *path,
                                        libxl__device *dev);
  _hidden int libxl__console_tty_path(libxl__gc *gc, uint32_t domid, int cons_num,
--- 
-2.31.1
-
+-----------------

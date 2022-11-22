@@ -16,16 +16,14 @@ libxl__device_destroy() is called when the driver domain already removed
 what it can.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl_device.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
+-----------
 diff --git a/tools/libs/light/libxl_device.c b/tools/libs/light/libxl_device.c
-index 0381c5d50947..3d2051354f6b 100644
+index 617f0fa4..fd0524bb 100644
 --- a/tools/libs/light/libxl_device.c
 +++ b/tools/libs/light/libxl_device.c
-@@ -763,6 +763,12 @@ int libxl__device_destroy(libxl__gc *gc, libxl__device *dev)
-              * from the backend path.
+@@ -769,6 +769,12 @@ int libxl__device_destroy(libxl__gc *gc, libxl__device *dev)
+              * directory if empty already.
               */
              libxl__xs_path_cleanup(gc, t, be_path);
 +        } else if (domid == LIBXL_TOOLSTACK_DOMID && !libxl_only) {
@@ -37,6 +35,4 @@ index 0381c5d50947..3d2051354f6b 100644
          }
  
          rc = libxl__xs_transaction_commit(gc, &t);
--- 
-2.25.4
-
+-----------------

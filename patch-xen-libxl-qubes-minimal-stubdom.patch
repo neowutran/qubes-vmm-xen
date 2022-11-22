@@ -14,16 +14,13 @@ when no access method was configured. Then check if qemu is really
 needed.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl.c    |  4 +++-
- tools/libxl/libxl_dm.c | 51 ++++++++++++++++++++++++++++++++++++--------------
- 2 files changed, 40 insertions(+), 15 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_disk.c b/tools/libs/light/libxl_disk.c
-index 34bcbf2..66a3ded 100644
+index 67d1cc18..81ad2162 100644
 --- a/tools/libs/light/libxl_disk.c
 +++ b/tools/libs/light/libxl_disk.c
-@@ -1161,10 +1161,12 @@ static void disk_eject_xswatch_callback(libxl__egc *egc, libxl__ev_xswatch *w,
+@@ -56,10 +56,12 @@ static void disk_eject_xswatch_callback(libxl__egc *egc, libxl__ev_xswatch *w,
              "/local/domain/%d/backend/%" TOSTRING(BACKEND_STRING_SIZE)
             "[a-z]/%*d/%*d",
             &disk->backend_domid, backend_type);
@@ -37,5 +34,4 @@ index 34bcbf2..66a3ded 100644
      } else {
          disk->backend = LIBXL_DISK_BACKEND_UNKNOWN;
      }
--- 
-2.1.0
+-----------------

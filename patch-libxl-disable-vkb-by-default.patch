@@ -12,15 +12,13 @@ Cc: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 We have Qubes GUI agent for that.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl_create.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_create.c b/tools/libs/light/libxl_create.c
-index a6d40b753e..974ac9bc9e 100644
+index db63b103..35aebb9f 100644
 --- a/tools/libs/light/libxl_create.c
 +++ b/tools/libs/light/libxl_create.c
-@@ -351,7 +351,7 @@ int libxl__domain_build_info_setdefault(libxl__gc *gc,
+@@ -379,7 +379,7 @@ int libxl__domain_build_info_setdefault(libxl__gc *gc,
          libxl_defbool_setdefault(&b_info->u.hvm.vpt_align,          true);
          libxl_defbool_setdefault(&b_info->u.hvm.altp2m,             false);
          libxl_defbool_setdefault(&b_info->u.hvm.usb,                false);
@@ -29,6 +27,4 @@ index a6d40b753e..974ac9bc9e 100644
          libxl_defbool_setdefault(&b_info->u.hvm.xen_platform_pci,   true);
  
          libxl_defbool_setdefault(&b_info->u.hvm.spice.enable, false);
--- 
-2.21.0
-
+-----------------

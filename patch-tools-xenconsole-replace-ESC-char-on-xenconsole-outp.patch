@@ -18,14 +18,10 @@ Add an -r/--no-replace-escape option to xenconsole client to disable
 replacing ESC. Carry it from xl command through env variable.
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/console/client/main.c | 21 ++++++++++++++++++---
- tools/xl/xl_cmdtable.c      |  3 ++-
- tools/xl/xl_console.c       |  8 +++++++-
- 3 files changed, 27 insertions(+), 5 deletions(-)
 
+-----------
 diff --git a/tools/console/client/main.c b/tools/console/client/main.c
-index f92ad3d8cf..bdfc8aef52 100644
+index 80157be4..fa4c147b 100644
 --- a/tools/console/client/main.c
 +++ b/tools/console/client/main.c
 @@ -78,6 +78,7 @@ static void usage(const char *program) {
@@ -108,10 +104,10 @@ index f92ad3d8cf..bdfc8aef52 100644
  	free(path);
  	free(dom_path);
 diff --git a/tools/xl/xl_cmdtable.c b/tools/xl/xl_cmdtable.c
-index 89716badcb..f9f56e038f 100644
+index 661323d4..9d1c1926 100644
 --- a/tools/xl/xl_cmdtable.c
 +++ b/tools/xl/xl_cmdtable.c
-@@ -136,7 +136,8 @@ struct cmd_spec cmd_table[] = {
+@@ -141,7 +141,8 @@ const struct cmd_spec cmd_table[] = {
        "Attach to domain's console",
        "[options] <Domain>\n"
        "-t <type>       console type, pv , serial or vuart\n"
@@ -122,7 +118,7 @@ index 89716badcb..f9f56e038f 100644
      { "vncviewer",
        &main_vncviewer, 0, 0,
 diff --git a/tools/xl/xl_console.c b/tools/xl/xl_console.c
-index 4e65d73867..d9d78ed079 100644
+index b27f9e01..212cb66d 100644
 --- a/tools/xl/xl_console.c
 +++ b/tools/xl/xl_console.c
 @@ -27,9 +27,10 @@ int main_console(int argc, char **argv)
@@ -151,6 +147,4 @@ index 4e65d73867..d9d78ed079 100644
      domid = find_domain(argv[optind]);
      if (!type)
          libxl_primary_console_exec(ctx, domid, -1);
--- 
-2.17.2
-
+-----------------

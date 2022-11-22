@@ -1,6 +1,24 @@
-diff -ru xen-4.1.0.orig/Makefile xen-4.1.0/Makefile
---- xen-4.4.0/m4/fetcher.m4.orig	2014-06-24 01:08:52.593933406 +0200
-+++ xen-4.4.0/m4/fetcher.m4	2014-06-24 01:09:29.337842284 +0200
+
+
+
+-----------
+diff --git a/config/StdGNU.mk b/config/StdGNU.mk
+index 039274e..b39d6e5 100644
+--- a/config/StdGNU.mk
++++ b/config/StdGNU.mk
+@@ -19,7 +19,7 @@ OBJDUMP    = $(CROSS_COMPILE)objdump
+ SIZEUTIL   = $(CROSS_COMPILE)size
+ 
+ # Allow git to be wrappered in the environment
+-GIT        ?= git
++GIT        ?= false
+ 
+ INSTALL      = install
+ INSTALL_DIR  = $(INSTALL) -d -m0755 -p
+diff --git a/m4/fetcher.m4 b/m4/fetcher.m4
+index c1a72c1..e800e29 100644
+--- a/m4/fetcher.m4
++++ b/m4/fetcher.m4
 @@ -1,16 +1,5 @@
  AC_DEFUN([AX_CHECK_FETCHER], [
 -AC_PATH_PROG([WGET],[wget], [no])
@@ -19,14 +37,4 @@ diff -ru xen-4.1.0.orig/Makefile xen-4.1.0/Makefile
 +FETCHER="false"
  AC_SUBST(FETCHER)
  ])
---- a/config/StdGNU.mk.orig
-+++ b/config/StdGNU.mk
-@@ -19,7 +19,7 @@ OBJDUMP    = $(CROSS_COMPILE)objdump
- SIZEUTIL   = $(CROSS_COMPILE)size
- 
- # Allow git to be wrappered in the environment
--GIT        ?= git
-+GIT        ?= false
- 
- INSTALL      = install
- INSTALL_DIR  = $(INSTALL) -d -m0755 -p
+-----------------

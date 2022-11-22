@@ -8,19 +8,15 @@ Varibles impacting reproducibility are now defined with respect
 to SOURCE_DATE_EPOCH.
 
 Improvements from Jan Beuluch <jbeulich@suse.com>.
----
- Config.mk                         | 2 ++
- INSTALL                           | 6 ++++++
- tools/firmware/hvmloader/Makefile | 2 +-
- tools/firmware/vgabios/Makefile   | 3 ++-
- xen/Makefile                      | 5 +++--
- 5 files changed, 14 insertions(+), 4 deletions(-)
 
+
+
+-----------
 diff --git a/Config.mk b/Config.mk
-index 259e68863d..ab8a232693 100644
+index 09ea696..12aeb06 100644
 --- a/Config.mk
 +++ b/Config.mk
-@@ -269,3 +269,5 @@ QEMU_UPSTREAM_LOC ?= $(call or,$(wildcard $(QEMU_UPSTREAM_INTREE)),\
+@@ -260,3 +260,5 @@ QEMU_UPSTREAM_LOC ?= $(call or,$(wildcard $(QEMU_UPSTREAM_INTREE)),\
                                 $(QEMU_UPSTREAM_URL))
  
  CONFIG_TESTS       ?= y
@@ -28,7 +24,7 @@ index 259e68863d..ab8a232693 100644
 +DATE_EPOCH_OPTS := $(if $(SOURCE_DATE_EPOCH),-u -d "@$(SOURCE_DATE_EPOCH)")
 \ No newline at end of file
 diff --git a/INSTALL b/INSTALL
-index 0d3eb89f02..2ce1f78b4d 100644
+index 0d3eb89..2ce1f78 100644
 --- a/INSTALL
 +++ b/INSTALL
 @@ -241,6 +241,12 @@ XEN_BUILD_TIME=hh:mm:ss
@@ -45,7 +41,7 @@ index 0d3eb89f02..2ce1f78b4d 100644
  GIT=
  
 diff --git a/tools/firmware/hvmloader/Makefile b/tools/firmware/hvmloader/Makefile
-index e980ce7c5f..6b6233cf51 100644
+index e980ce7..6b6233c 100644
 --- a/tools/firmware/hvmloader/Makefile
 +++ b/tools/firmware/hvmloader/Makefile
 @@ -21,7 +21,7 @@ XEN_ROOT = $(CURDIR)/../../..
@@ -58,7 +54,7 @@ index e980ce7c5f..6b6233cf51 100644
  CFLAGS += $(CFLAGS_xeninclude)
  
 diff --git a/tools/firmware/vgabios/Makefile b/tools/firmware/vgabios/Makefile
-index 3284812fde..4350ef4021 100644
+index 3284812..4350ef4 100644
 --- a/tools/firmware/vgabios/Makefile
 +++ b/tools/firmware/vgabios/Makefile
 @@ -5,7 +5,8 @@ BCC = bcc
@@ -72,7 +68,7 @@ index 3284812fde..4350ef4021 100644
  
  VGABIOS_DATE = "-DVGABIOS_DATE=\"$(VGABIOS_REL_DATE)\""
 diff --git a/xen/Makefile b/xen/Makefile
-index bf0c804d43..3820bf1590 100644
+index d6f426e..5fba307 100644
 --- a/xen/Makefile
 +++ b/xen/Makefile
 @@ -8,8 +8,9 @@ export XEN_FULLVERSION   = $(XEN_VERSION).$(XEN_SUBVERSION)$(XEN_EXTRAVERSION)
@@ -87,6 +83,4 @@ index bf0c804d43..3820bf1590 100644
  export XEN_BUILD_HOST	?= $(shell hostname)
  
  # Best effort attempt to find a python interpreter, defaulting to Python 3 if
--- 
-2.26.2
-
+-----------------

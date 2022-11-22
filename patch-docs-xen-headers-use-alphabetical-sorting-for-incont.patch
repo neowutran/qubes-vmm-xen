@@ -5,12 +5,12 @@ Date: Sat, 7 Nov 2020 18:21:07 +0100
 Subject: [PATCH] docs/xen-headers: use alphabetical sorting for @incontents
 
 It makes the build reproducible with fileordering flags
----
- docs/xen-headers | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
+
+
+-----------
 diff --git a/docs/xen-headers b/docs/xen-headers
-index 54155632c4..98ffe81450 100755
+index 8c434d7..98ffe81 100755
 --- a/docs/xen-headers
 +++ b/docs/xen-headers
 @@ -331,7 +331,7 @@ sub output_index () {
@@ -22,6 +22,4 @@ index 54155632c4..98ffe81450 100755
          $o .= "<li><a href=\"$ic->{Href}\">$ic->{Title}</a></li>\n";
      }
      $o .= "</ul>\n";
--- 
-2.26.2
-
+-----------------

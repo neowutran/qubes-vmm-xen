@@ -6,15 +6,13 @@ Subject: [PATCH] Always allocate domid sequentially, and do not reuse them
 
 While domid wrapping around is unlikely on Qubes, make sure it wont
 happen, to avoid various corner cases.
----
- xen/common/domctl.c | 34 ++++++++++++----------------------
- 1 file changed, 12 insertions(+), 22 deletions(-)
 
+-----------
 diff --git a/xen/common/domctl.c b/xen/common/domctl.c
-index 2b25653b49..7afae44604 100644
+index 65d2a458..507c9e93 100644
 --- a/xen/common/domctl.c
 +++ b/xen/common/domctl.c
-@@ -489,32 +489,22 @@ long do_domctl(XEN_GUEST_HANDLE_PARAM(xen_domctl_t) u_domctl)
+@@ -404,32 +404,22 @@ long do_domctl(XEN_GUEST_HANDLE_PARAM(xen_domctl_t) u_domctl)
      case XEN_DOMCTL_createdomain:
      {
          domid_t        dom;
@@ -59,6 +57,4 @@ index 2b25653b49..7afae44604 100644
          d = domain_create(dom, &op->u.createdomain, false);
          if ( IS_ERR(d) )
          {
--- 
-2.31.1
-
+-----------------

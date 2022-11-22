@@ -6,13 +6,12 @@ Subject: [PATCH] docs: rename DATE to PANDOC_REL_DATE and allow to specify it
 
 PANDOC_REL_DATE is now defined with respect to
 SOURCE_DATE_EPOCH (if set). It improves reproducibility.
----
- INSTALL       | 1 +
- docs/Makefile | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
 
+
+
+-----------
 diff --git a/INSTALL b/INSTALL
-index 2ce1f78b4d..84c93ab9d5 100644
+index 2ce1f78..84c93ab 100644
 --- a/INSTALL
 +++ b/INSTALL
 @@ -240,6 +240,7 @@ XEN_BUILD_DATE=<output of date(1)>
@@ -24,7 +23,7 @@ index 2ce1f78b4d..84c93ab9d5 100644
  It is sufficient to define only SOURCE_DATE_EPOCH instead of the above
  variables for having reproducible builds. By default, they use
 diff --git a/docs/Makefile b/docs/Makefile
-index 8de1efb6f5..92ef1b5238 100644
+index 8de1efb..92ef1b5 100644
 --- a/docs/Makefile
 +++ b/docs/Makefile
 @@ -3,7 +3,7 @@ include $(XEN_ROOT)/Config.mk
@@ -45,6 +44,4 @@ index 8de1efb6f5..92ef1b5238 100644
  			  -V header=Xen $$< -t man --output $$@
  else
  	@echo "pandoc not installed; skipping $$@"
--- 
-2.26.2
-
+-----------------

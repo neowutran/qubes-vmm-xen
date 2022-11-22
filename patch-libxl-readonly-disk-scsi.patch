@@ -1,11 +1,13 @@
 Force emulating readonly disks as SCSI
 
 IDE and AHCI emulation in qemu-xen does not support read-only disks.
+
+-----------
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
-index b245956b77..f1ea8abdff 100644
+index 49d46e06..75340ff1 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
-@@ -1327,7 +1327,7 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
+@@ -1363,7 +1363,7 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
              if (disks[i].is_cdrom) {
                  continue;
              }
@@ -14,7 +16,7 @@ index b245956b77..f1ea8abdff 100644
                  flexarray_vappend(dm_args, "-device", "lsi53c895a", NULL);
                  break;
              }
-@@ -1853,7 +1853,7 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
+@@ -1936,7 +1936,7 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
                      colo_mode = LIBXL__COLO_NONE;
                  }
  
@@ -23,3 +25,4 @@ index b245956b77..f1ea8abdff 100644
                      const char *drive_id;
                      if (colo_mode == LIBXL__COLO_SECONDARY) {
                          drive = libxl__sprintf
+-----------------

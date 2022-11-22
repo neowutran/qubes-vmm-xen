@@ -6,17 +6,15 @@ This is going to be used to put libfsimage.so into a path containing
 the multiarch triplet.
 
 Signed-off-by: Ian Jackson <ian.jackson@citrix.com>
----
- m4/paths.m4 | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
 
+-----------
 diff --git a/m4/paths.m4 b/m4/paths.m4
-index 89d3bb8..42b4970 100644
+index 7be314a..9cf906e 100644
 --- a/m4/paths.m4
 +++ b/m4/paths.m4
-@@ -70,6 +70,13 @@ AC_ARG_WITH([libexec-leaf-dir],
-     [libexec_subdir=$withval],
-     [libexec_subdir=$PACKAGE_TARNAME])
+@@ -84,6 +84,13 @@ AC_ARG_WITH([xen-scriptdir],
+ XEN_SCRIPT_DIR=$xen_scriptdir_path
+ AC_SUBST(XEN_SCRIPT_DIR)
  
 +dnl Allows .../libexec/lib (used for libfsimage) to have a multiarch path
 +AC_ARG_WITH([libexec-libdir-suffix],
@@ -28,7 +26,7 @@ index 89d3bb8..42b4970 100644
  AC_ARG_WITH([xen-dumpdir],
      AS_HELP_STRING([--with-xen-dumpdir=DIR],
      [Path to directory for domU crash dumps. [LOCALSTATEDIR/lib/xen/dump]]),
-@@ -103,7 +110,7 @@ AC_SUBST(LIBEXEC)
+@@ -117,7 +124,7 @@ AC_SUBST(LIBEXEC)
  dnl These variables will be substituted in various .in files
  LIBEXEC_BIN=${LIBEXEC}/bin
  AC_SUBST(LIBEXEC_BIN)
@@ -37,3 +35,4 @@ index 89d3bb8..42b4970 100644
  AC_SUBST(LIBEXEC_LIB)
  LIBEXEC_INC=${LIBEXEC}/include
  AC_SUBST(LIBEXEC_INC)
+-----------------

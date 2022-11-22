@@ -2,8 +2,13 @@ Use /var/run/xen-hotplug for storing information needed to cleanup devices.
 When called "remove" action - xenstore entriens can be already deleted.
 
 Signed-off-by: Marek Marczykowski <marmarek@mimuw.edu.pl>
---- xen-4.1.0/tools/hotplug/Linux/block	2011-03-25 11:42:50.000000000 +0100
-+++ xen-4.1.0/tools/hotplug/Linux/block	2011-06-09 13:57:15.000000000 +0200
+
+
+-----------
+diff --git a/tools/hotplug/Linux/block b/tools/hotplug/Linux/block
+index 2691b56..dc44669 100644
+--- a/tools/hotplug/Linux/block
++++ b/tools/hotplug/Linux/block
 @@ -3,6 +3,8 @@
  dir=$(dirname "$0")
  . "$dir/block-common.sh"
@@ -13,17 +18,17 @@ Signed-off-by: Marek Marczykowski <marmarek@mimuw.edu.pl>
  expand_dev() {
    local dev
    case $1 in
-@@ -221,6 +225,9 @@
+@@ -256,6 +258,9 @@ case "$command" in
        # script to be called twice, so just bail.
        exit 0
      fi
 +    echo $p > "$HOTPLUG_STORE-params"
 +    echo $mode > "$HOTPLUG_STORE-mode"
 +    echo $truetype > "$HOTPLUG_STORE-type"
-
+ 
      FRONTEND_ID=$(xenstore_read "$XENBUS_PATH/frontend-id")
      FRONTEND_UUID=$(xenstore_read_default \
-@@ -305,6 +312,7 @@
+@@ -332,6 +337,7 @@ mount it read-write in a guest domain."
          fi
          do_or_die losetup $roflag "$loopdev" "$file"
          xenstore_write "$XENBUS_PATH/node" "$loopdev"
@@ -31,7 +36,7 @@ Signed-off-by: Marek Marczykowski <marmarek@mimuw.edu.pl>
          write_dev "$loopdev"
          release_lock "block"
          exit 0
-@@ -319,6 +327,7 @@
+@@ -346,6 +352,7 @@ mount it read-write in a guest domain."
      ;;
  
    remove)
@@ -39,7 +44,7 @@ Signed-off-by: Marek Marczykowski <marmarek@mimuw.edu.pl>
      case $truetype in
        phy)
  	exit 0
-@@ -326,8 +335,8 @@
+@@ -353,8 +360,8 @@ mount it read-write in a guest domain."
  
        file)
          claim_lock "block"
@@ -50,3 +55,4 @@ Signed-off-by: Marek Marczykowski <marmarek@mimuw.edu.pl>
          release_lock "block"
  	exit 0
  	;;
+-----------------

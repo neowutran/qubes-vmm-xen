@@ -15,12 +15,10 @@ prevent race conditions.  Also check if a guest has suspended when the
 timeout handler is called, and do not consider this to be a timeout.
 
 Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
----
- tools/libxl/libxl_dom_suspend.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_dom_suspend.c b/tools/libs/light/libxl_dom_suspend.c
-index d276b3c17e70105c19c82e9da570a24297d039f5..42c0e0a152e04fab34152d711564ffe148f24a4c 100644
+index d276b3c1..42c0e0a1 100644
 --- a/tools/libs/light/libxl_dom_suspend.c
 +++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -209,7 +209,8 @@ static void domain_suspend_common_wait_guest_evtchn(libxl__egc *egc,
@@ -77,7 +75,4 @@ index d276b3c17e70105c19c82e9da570a24297d039f5..42c0e0a152e04fab34152d711564ffe1
      if (rc == ERROR_TIMEDOUT) {
          LOGD(ERROR, dsps->domid, "guest did not suspend, timed out");
          rc = ERROR_GUEST_TIMEDOUT;
--- 
-Sincerely,
-Demi Marie Obenour (she/her/hers)
-Invisible Things Lab
+-----------------

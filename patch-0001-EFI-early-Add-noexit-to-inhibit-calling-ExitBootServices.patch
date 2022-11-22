@@ -13,12 +13,26 @@ cannot deal running in 1-1 mode and having BootSevices being disabled.
 Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@xxxxxxxxxx>
 Ported to Xen 4.7.0
 Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
----
- xen/common/efi/boot.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
---- xen-4.7.0/xen/common/efi/boot.c     2016-07-20 16:19:13.337000000 +0300
-+++ xen-4.7.0-new/xen/common/efi/boot.c 2016-07-20 16:18:51.621000000 +0300
-@@ -128,7 +128,7 @@
+
+-----------
+diff --git a/xen/arch/x86/efi/efi-boot.h b/xen/arch/x86/efi/efi-boot.h
+index 4ee77fb..889f62f 100644
+--- a/xen/arch/x86/efi/efi-boot.h
++++ b/xen/arch/x86/efi/efi-boot.h
+@@ -758,7 +758,7 @@ void __init efi_multiboot2(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
+     if ( gop )
+         efi_set_gop_mode(gop, gop_mode);
+ 
+-    efi_exit_boot(ImageHandle, SystemTable);
++    efi_exit_boot(ImageHandle, SystemTable, true);
+ }
+ 
+ /*
+diff --git a/xen/common/efi/boot.c b/xen/common/efi/boot.c
+index 8fd5e2d..7c510b5 100644
+--- a/xen/common/efi/boot.c
++++ b/xen/common/efi/boot.c
+@@ -140,7 +140,7 @@ static void efi_tables(void);
  static void setup_efi_pci(void);
  static void efi_variables(void);
  static void efi_set_gop_mode(EFI_GRAPHICS_OUTPUT_PROTOCOL *gop, UINTN gop_mode);
@@ -27,19 +41,19 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
  
  static const EFI_BOOT_SERVICES *__initdata efi_bs;
  static UINT32 __initdata efi_bs_revision;
-@@ -856,7 +856,7 @@
+@@ -1046,7 +1046,7 @@ static void __init efi_set_gop_mode(EFI_GRAPHICS_OUTPUT_PROTOCOL *gop, UINTN gop
  #define INVALID_VIRTUAL_ADDRESS (0xBAAADUL << \
                                   (EFI_PAGE_SHIFT + BITS_PER_LONG - 32))
-
+ 
 -static void __init efi_exit_boot(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
 +static void __init efi_exit_boot(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable, bool exit_boot_services)
  {
      EFI_STATUS status;
      UINTN info_size = 0, map_key;
-@@ -884,8 +884,11 @@
-
+@@ -1077,8 +1077,11 @@ static void __init efi_exit_boot(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *Syste
+ 
          efi_arch_pre_exit_boot();
-
+ 
 -        status = SystemTable->BootServices->ExitBootServices(ImageHandle,
 +        if (exit_boot_services)
 +            status = SystemTable->BootServices->ExitBootServices(ImageHandle,
@@ -49,7 +63,7 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
          efi_bs = NULL;
          if ( status != EFI_INVALID_PARAMETER || retry )
              break;
-@@ -931,7 +934,7 @@
+@@ -1142,7 +1145,7 @@ efi_start(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
      EFI_SHIM_LOCK_PROTOCOL *shim_lock;
      EFI_GRAPHICS_OUTPUT_PROTOCOL *gop = NULL;
      union string section = { NULL }, name;
@@ -57,8 +71,8 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
 +    bool base_video = false, exit_boot_services = true;
      const char *option_str;
      bool use_cfg_file;
-
-@@ -971,6 +974,8 @@
+     int dt_modules_found;
+@@ -1192,6 +1195,8 @@ efi_start(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
                      base_video = true;
                  else if ( wstrcmp(ptr + 1, L"mapbs") == 0 )
                      map_bs = true;
@@ -67,7 +81,7 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
                  else if ( wstrncmp(ptr + 1, L"cfg=", 4) == 0 )
                      cfg_file_name = ptr + 5;
                  else if ( i + 1 < argc && wstrcmp(ptr + 1, L"cfg") == 0 )
-@@ -981,6 +986,7 @@
+@@ -1202,6 +1207,7 @@ efi_start(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
                      PrintStr(L"Xen EFI Loader options:\r\n");
                      PrintStr(L"-basevideo   retain current video mode\r\n");
                      PrintStr(L"-mapbs       map EfiBootServices{Code,Data}\r\n");
@@ -75,23 +89,13 @@ Signed-off-by: Marcus of Wetware Labs <marcus@wetwa.re>
                      PrintStr(L"-cfg=<file>  specify configuration file\r\n");
                      PrintStr(L"-help, -?    display this help\r\n");
                      blexit(NULL);
-@@ -1146,7 +1164,7 @@
+@@ -1413,7 +1419,7 @@ efi_start(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
      if ( gop )
          efi_set_gop_mode(gop, gop_mode);
-
+ 
 -    efi_exit_boot(ImageHandle, SystemTable);
 +    efi_exit_boot(ImageHandle, SystemTable, exit_boot_services);
-
+ 
      efi_arch_post_exit_boot(); /* Doesn't return. */
  }
---- a/xen/arch/x86/efi/efi-boot.h	2018-07-19 01:26:13.842000000 +0200
-+++ b/xen/arch/x86/efi/efi-boot.h	2018-07-19 01:27:49.641000000 +0200
-@@ -706,7 +706,7 @@
-     if ( gop )
-         efi_set_gop_mode(gop, gop_mode);
- 
--    efi_exit_boot(ImageHandle, SystemTable);
-+    efi_exit_boot(ImageHandle, SystemTable, true);
- }
- 
- /*
+-----------------

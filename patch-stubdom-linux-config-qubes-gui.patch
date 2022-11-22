@@ -1,6 +1,11 @@
+
+
+-----------
+diff --git a/tools/libs/light/libxl_create.c b/tools/libs/light/libxl_create.c
+index 35aebb9f..659f3706 100644
 --- a/tools/libs/light/libxl_create.c
 +++ b/tools/libs/light/libxl_create.c
-@@ -365,6 +365,18 @@ int libxl__domain_build_info_setdefault(
+@@ -417,6 +417,18 @@ int libxl__domain_build_info_setdefault(libxl__gc *gc,
              libxl_defbool_setdefault(&b_info->u.hvm.sdl.opengl, false);
          }
  
@@ -19,9 +24,11 @@
          if (libxl_defbool_val(b_info->u.hvm.spice.enable)) {
              libxl_defbool_setdefault(&b_info->u.hvm.spice.disable_ticketing,
                                       false);
+diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
+index 75340ff1..424a955d 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
-@@ -1272,6 +1272,13 @@ static int libxl__build_device_model_arg
+@@ -1703,6 +1703,13 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
              flexarray_append(dm_args, "-net");
              flexarray_append(dm_args, "none");
          }
@@ -35,9 +42,11 @@
      } else {
          if (!sdl && !vnc) {
              flexarray_append(dm_args, "-nographic");
+diff --git a/tools/libs/light/libxl_types.idl b/tools/libs/light/libxl_types.idl
+index 2a42da2f..211a2f47 100644
 --- a/tools/libs/light/libxl_types.idl
 +++ b/tools/libs/light/libxl_types.idl
-@@ -301,6 +301,13 @@ libxl_sdl_info = Struct("sdl_info", [
+@@ -331,6 +331,13 @@ libxl_sdl_info = Struct("sdl_info", [
      ("xauthority",    string),
      ])
  
@@ -51,7 +60,7 @@
  libxl_dominfo = Struct("dominfo",[
      ("uuid",        libxl_uuid),
      ("domid",       libxl_domid),
-@@ -557,6 +564,8 @@ libxl_domain_build_info = Struct("domain
+@@ -624,6 +631,8 @@ libxl_domain_build_info = Struct("domain_build_info",[
                                         ("rdm", libxl_rdm_reserve),
                                         ("rdm_mem_boundary_memkb", MemKB),
                                         ("mca_caps",         uint64),
@@ -60,3 +69,4 @@
                                         ])),
                   ("pv", Struct(None, [("kernel", string, {'deprecated_by': 'kernel'}),
                                        ("slack_memkb", MemKB),
+-----------------

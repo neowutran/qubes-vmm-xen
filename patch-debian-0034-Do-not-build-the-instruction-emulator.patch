@@ -3,10 +3,8 @@ Date: Thu, 20 Sep 2018 18:10:14 +0100
 Subject: Do not build the instruction emulator
 
 Signed-off-by: Ian Jackson <ian.jackson@citrix.com>
----
- tools/fuzz/Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
+-----------
 diff --git a/tools/fuzz/Makefile b/tools/fuzz/Makefile
 index 85213dc..6b7970b 100644
 --- a/tools/fuzz/Makefile
@@ -23,3 +21,4 @@ index 85213dc..6b7970b 100644
  
  .PHONY: all clean distclean install uninstall
  all clean distclean install uninstall: %: subdirs-%
+-----------------

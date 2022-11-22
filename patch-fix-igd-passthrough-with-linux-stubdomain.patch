@@ -6,15 +6,13 @@ Subject: [PATCH] Fix IGD passthrough with linux stubdomain
 - Give permissions for VGA IOPORTS
 - Give permission for opregions
 - Map vbios to stubdom
----
- tools/libxl/libxl_pci.c | 154 +++++++++++++++++++++++++++++++++-------
- 1 file changed, 127 insertions(+), 27 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_pci.c b/tools/libs/light/libxl_pci.c
-index 957ff5c8e9..6feab9602e 100644
+index 4ece4cc2..dbf39cc1 100644
 --- a/tools/libs/light/libxl_pci.c
 +++ b/tools/libs/light/libxl_pci.c
-@@ -2441,17 +2441,128 @@ void libxl__device_pci_destroy_all(libxl__egc *egc, uint32_t domid,
+@@ -2545,17 +2545,128 @@ void libxl__device_pci_destroy_all(libxl__egc *egc, uint32_t domid,
      libxl_device_pci_list_free(pcis, num);
  }
  
@@ -147,7 +145,7 @@ index 957ff5c8e9..6feab9602e 100644
          libxl_device_pci *pci = &d_config->pcidevs[i];
          unsigned long pci_device_class;
  
-@@ -2460,30 +2571,19 @@ int libxl__grant_vga_iomem_permission(libxl__gc *gc, const uint32_t domid,
+@@ -2564,30 +2675,19 @@ int libxl__grant_vga_iomem_permission(libxl__gc *gc, const uint32_t domid,
          if (pci_device_class != 0x030000) /* VGA class */
              continue;
  
@@ -189,6 +187,4 @@ index 957ff5c8e9..6feab9602e 100644
  }
  
  static int libxl_device_pci_compare(const libxl_device_pci *d1,
--- 
-2.26.2
-
+-----------------

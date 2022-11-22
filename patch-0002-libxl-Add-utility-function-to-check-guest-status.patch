@@ -14,12 +14,10 @@ This is used to check that a guest has not been destroyed and to obtain
 information about it.  It will be used in subsequent patches.
 
 Signed-off-by: Demi Marie Obenour <demi@invisiblethingslab.com>
----
- tools/libxl/libxl_dom_suspend.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_dom_suspend.c b/tools/libs/light/libxl_dom_suspend.c
-index fa50e8801f35d173a99ae5dd19eb941649e14019..d2a88ea34efb115a8f2b861daf5884d95f39e81d 100644
+index fa50e880..d2a88ea3 100644
 --- a/tools/libs/light/libxl_dom_suspend.c
 +++ b/tools/libs/light/libxl_dom_suspend.c
 @@ -321,27 +321,36 @@ static void suspend_common_wait_guest_watch(libxl__egc *egc,
@@ -69,7 +67,4 @@ index fa50e8801f35d173a99ae5dd19eb941649e14019..d2a88ea34efb115a8f2b861daf5884d9
  
      if (!(info.flags & XEN_DOMINF_shutdown))
          /* keep waiting */
--- 
-Sincerely,
-Demi Marie Obenour (she/her/hers)
-Invisible Things Lab
+-----------------

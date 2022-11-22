@@ -17,19 +17,15 @@ This is also handy for development, to allow running Qubes OS nested
 withing KVM (on AMD, vIOMMU is unstable).
 
 Signed-off-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
----
- tools/libxl/libxl_create.c   |  8 ++++++-
- tools/libxl/libxl_internal.h |  2 ++
- tools/libxl/libxl_pci.c      | 41 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 48 insertions(+), 3 deletions(-)
 
+-----------
 diff --git a/tools/libs/light/libxl_create.c b/tools/libs/light/libxl_create.c
-index 2814818e34d2..90aa0a35cdc8 100644
+index 659f3706..73529a18 100644
 --- a/tools/libs/light/libxl_create.c
 +++ b/tools/libs/light/libxl_create.c
-@@ -1097,12 +1097,18 @@ int libxl__domain_config_setdefault(libxl__gc *gc,
-     }
- 
+@@ -1160,12 +1160,18 @@ int libxl__domain_config_setdefault(libxl__gc *gc,
+      * This will be insufficient if and when ARM does PCI hotplug.
+      */
      bool need_pt = d_config->num_pcidevs || d_config->num_dtdevs;
 +    bool iommu_enabled = physinfo.cap_hvm_directio;
 +    if (need_pt && !iommu_enabled &&
@@ -48,10 +44,10 @@ index 2814818e34d2..90aa0a35cdc8 100644
          LOGD(ERROR, domid,
               "passthrough not supported on this platform\n");
 diff --git a/tools/libs/light/libxl_internal.h b/tools/libs/light/libxl_internal.h
-index 94a23179d30a..a5b3bbcdf094 100644
+index 8fd0ac97..9d3875fb 100644
 --- a/tools/libs/light/libxl_internal.h
 +++ b/tools/libs/light/libxl_internal.h
-@@ -4819,6 +4819,8 @@ static inline const char *libxl__qemu_qmp_path(libxl__gc *gc, int domid)
+@@ -4844,6 +4844,8 @@ static inline const char *libxl__qemu_qmp_path(libxl__gc *gc, int domid)
      return GCSPRINTF("%s/qmp-libxl-%d", libxl__run_dir_path(), domid);
  }
  
@@ -61,11 +57,11 @@ index 94a23179d30a..a5b3bbcdf094 100644
  _hidden int libxl__domain_pvcontrol(libxl__egc *egc,
                                      libxl__xswait_state *pvcontrol,
 diff --git a/tools/libs/light/libxl_pci.c b/tools/libs/light/libxl_pci.c
-index bc5843b13701..87fbce653d81 100644
+index bf235ce2..4ece4cc2 100644
 --- a/tools/libs/light/libxl_pci.c
 +++ b/tools/libs/light/libxl_pci.c
-@@ -1432,8 +1432,10 @@ out_no_irq:
-         r = xc_assign_device(ctx->xch, domid, pcidev_encode_bdf(pcidev), flag);
+@@ -1506,8 +1506,10 @@ out_no_irq:
+         r = xc_assign_device(ctx->xch, domid, pci_encode_bdf(pci), flag);
          if (r < 0 && (hvm || errno != ENOSYS)) {
              LOGED(ERROR, domainid, "xc_assign_device failed");
 -            rc = ERROR_FAIL;
@@ -77,7 +73,7 @@ index bc5843b13701..87fbce653d81 100644
          }
      }
  
-@@ -1483,6 +1485,41 @@ static int libxl__device_pci_reset(libxl__gc *gc, unsigned int domain, unsigned
+@@ -1557,6 +1559,41 @@ static int libxl__device_pci_reset(libxl__gc *gc, unsigned int domain, unsigned
      return -1;
  }
  
@@ -119,6 +115,4 @@ index bc5843b13701..87fbce653d81 100644
  int libxl__device_pci_setdefault(libxl__gc *gc, uint32_t domid,
                                   libxl_device_pci *pci, bool hotplug)
  {
--- 
-2.25.4
-
+-----------------

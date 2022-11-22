@@ -1,6 +1,11 @@
+
+
+-----------
+diff --git a/tools/libs/light/libxl_create.c b/tools/libs/light/libxl_create.c
+index f01fa250..db63b103 100644
 --- a/tools/libs/light/libxl_create.c
 +++ b/tools/libs/light/libxl_create.c
-@@ -152,7 +152,8 @@ int libxl__domain_build_info_setdefault(
+@@ -181,7 +181,8 @@ int libxl__domain_build_info_setdefault(libxl__gc *gc,
          /* Check HVM direct boot parameters, we should honour ->ramdisk and
           * ->cmdline iff ->kernel is set.
           */
@@ -10,4 +15,4 @@
              LOG(ERROR, "direct boot parameters specified but kernel missing");
              return ERROR_INVAL;
          }
-
+-----------------

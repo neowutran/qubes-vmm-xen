@@ -39,9 +39,13 @@ INTERNAL DEPENDENCIES
 ################################################################################
 PATCHES 
 ################################################################################
+
+-----------
+diff --git a/tools/libacpi/build.c b/tools/libacpi/build.c
+index fe2db66a..51de7e37 100644
 --- a/tools/libacpi/build.c
 +++ b/tools/libacpi/build.c
-@@ -340,6 +340,66 @@ static int construct_passthrough_tables(
+@@ -340,6 +340,66 @@ static int construct_passthrough_tables(struct acpi_ctxt *ctxt,
      return nr_added;
  }
  
@@ -108,7 +112,7 @@ PATCHES
  static int construct_secondary_tables(struct acpi_ctxt *ctxt,
                                        unsigned long *table_ptrs,
                                        struct acpi_config *config,
-@@ -515,6 +575,8 @@ int acpi_build_tables(struct acpi_ctxt *
+@@ -513,6 +573,8 @@ int acpi_build_tables(struct acpi_ctxt *ctxt, struct acpi_config *config)
      unsigned long        secondary_tables[ACPI_MAX_SECONDARY_TABLES];
      int                  nr_secondaries, i;
      unsigned int         fadt_size;
@@ -117,7 +121,7 @@ PATCHES
  
      acpi_info = (struct acpi_info *)config->infop;
      memset(acpi_info, 0, sizeof(*acpi_info));
-@@ -634,6 +696,27 @@ int acpi_build_tables(struct acpi_ctxt *
+@@ -632,6 +694,27 @@ int acpi_build_tables(struct acpi_ctxt *ctxt, struct acpi_config *config)
      if ( nr_secondaries < 0 )
          goto oom;
  
@@ -145,7 +149,7 @@ PATCHES
      xsdt = ctxt->mem_ops.alloc(ctxt, sizeof(struct acpi_20_xsdt) + 
                                 sizeof(uint64_t) * nr_secondaries,
                                 16);
-@@ -643,9 +726,13 @@ int acpi_build_tables(struct acpi_ctxt *
+@@ -641,9 +724,13 @@ int acpi_build_tables(struct acpi_ctxt *ctxt, struct acpi_config *config)
      for ( i = 0; secondary_tables[i]; i++ )
          xsdt->entry[i+1] = secondary_tables[i];
      xsdt->header.length = sizeof(struct acpi_header) + (i+1)*sizeof(uint64_t);
@@ -162,7 +166,7 @@ PATCHES
  
      rsdt = ctxt->mem_ops.alloc(ctxt, sizeof(struct acpi_20_rsdt) +
                                 sizeof(uint32_t) * nr_secondaries,
-@@ -656,9 +743,13 @@ int acpi_build_tables(struct acpi_ctxt *
+@@ -654,9 +741,13 @@ int acpi_build_tables(struct acpi_ctxt *ctxt, struct acpi_config *config)
      for ( i = 0; secondary_tables[i]; i++ )
          rsdt->entry[i+1] = secondary_tables[i];
      rsdt->header.length = sizeof(struct acpi_header) + (i+1)*sizeof(uint32_t);
@@ -179,7 +183,7 @@ PATCHES
  
      /*
       * Fill in low-memory data structures: acpi_info and RSDP.
-@@ -668,6 +759,9 @@ int acpi_build_tables(struct acpi_ctxt *
+@@ -666,6 +757,9 @@ int acpi_build_tables(struct acpi_ctxt *ctxt, struct acpi_config *config)
      memcpy(rsdp, &Rsdp, sizeof(struct acpi_20_rsdp));
      rsdp->rsdt_address = ctxt->mem_ops.v2p(ctxt, rsdt);
      rsdp->xsdt_address = ctxt->mem_ops.v2p(ctxt, xsdt);
@@ -189,3 +193,4 @@ PATCHES
      set_checksum(rsdp,
                   offsetof(struct acpi_10_rsdp, checksum),
                   sizeof(struct acpi_10_rsdp));
+-----------------
