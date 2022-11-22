@@ -1,9 +1,6 @@
 # Build ocaml bits unless rpmbuild was run with --without ocaml 
 # or ocamlopt is missing (the xen makefile doesn't build ocaml bits if it isn't there)
 
-# NEOWUTRAN: Allow fuzz patching
-%global _default_patch_fuzz 2
-
 %define with_ocaml  %{?_without_ocaml: 0} %{?!_without_ocaml: 1}
 %define build_ocaml %(test -x %{_bindir}/ocamlopt && echo %{with_ocaml} || echo 0)
 # Build with docs unless rpmbuild was run with --without docs
