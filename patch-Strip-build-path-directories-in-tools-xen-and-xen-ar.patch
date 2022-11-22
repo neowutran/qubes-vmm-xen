@@ -56,5 +56,5 @@ index 69b6cfa..f202984 100644
 +CFLAGS-$(XEN_BUILD_EFI) += -ffile-prefix-map=$(XEN_ROOT)=.
  
  # Check if the linker supports PE.
- EFI_LDFLAGS = $(patsubst -m%,-mi386pep,$(XEN_LDFLAGS)) --subsystem=10
+ #EFI_LDFLAGS = $(patsubst -m%,-mi386pep,$(XEN_LDFLAGS)) --subsystem=10
 -----------------
