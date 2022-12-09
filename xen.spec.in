@@ -840,7 +840,7 @@ fi
 %dir %{_localstatedir}/lib/%{name}/dump
 %dir %{_localstatedir}/lib/%{name}/images
 # Xenstore persistent state
-%dir %{_localstatedir}/lib/xenstored
+#%dir %{_localstatedir}/lib/xenstored
 # Xenstore runtime state
 %ghost %{_localstatedir}/run/xenstored
 
