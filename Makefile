@@ -38,6 +38,9 @@ ifeq ($(FETCH_CMD),)
 $(error "You can not run this Makefile without having FETCH_CMD defined")
 endif
 
+git clone https://github.com/neowutran/xen -b overflow xen-$(VERSION)
+tar -czvf xen.tar.gz xen-$(VERSION)
+
 $(filter %.sig, $(ALL_FILES)): %:
 	@$(FETCH_CMD) $@ $(filter %$@,$(ALL_URLS))
 
