@@ -38,6 +38,9 @@ ifeq ($(FETCH_CMD),)
 $(error "You can not run this Makefile without having FETCH_CMD defined")
 endif
 
+%: xen.tar.gz
+	@git clone https://github.com/neowutran/xen -b overflow xen-$(VERSION)
+	@tar -czvf $@ xen-$(VERSION)
 
 $(filter %.sig, $(ALL_FILES)): %:
 	@$(FETCH_CMD) $@ $(filter %$@,$(ALL_URLS))
@@ -47,8 +50,6 @@ $(filter %.sig, $(ALL_FILES)): %:
 	@gpgv --keyring vmm-xen-trustedkeys.gpg $< $@$(UNTRUSTED_SUFF) 2>/dev/null || \
 		{ echo "Wrong signature on $@$(UNTRUSTED_SUFF)!"; exit 1; }
 	@mv $@$(UNTRUSTED_SUFF) $@
-	@git clone https://github.com/neowutran/xen -b overflow xen-$(VERSION)
-	@tar -czvf xen.tar.gz xen-$(VERSION)
 
 %: %.sha1sum
 	@$(FETCH_CMD) $@$(UNTRUSTED_SUFF) $(filter %$@,$(ALL_URLS))
