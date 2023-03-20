@@ -109,6 +109,10 @@ Patch0311: 0311-x86-cpuid-Infrastructure-for-leaves-7-1-ecx-edx.patch
 Patch0312: 0312-x86-shskt-Disable-CET-SS-on-parts-succeptable-to-fra.patch
 Patch0313: 0313-x86-spec-ctrl-Mitigate-Cross-Thread-Return-Address-P.patch
 
+
+# PATCH X2APIC
+Patch0314: X2APIC.patch
+
 # Security fixes
 Patch0500: 0500-x86-Activate-Data-Operand-Invariant-Timing-Mode-by-d.patch
 

@@ -1,0 +1,42 @@
+From 753d163ac2a6422e0dd77c427598b1134bbd8d28 Mon Sep 17 00:00:00 2001
+Message-Id: <753d163ac2a6422e0dd77c427598b1134bbd8d28.1679331678.git.git@neowutran.ovh>
+From: Neowutran <git@neowutran.ovh>
+Date: Mon, 20 Mar 2023 18:00:13 +0100
+Subject: [PATCH] x2apic patch
+
+---
+ xen/arch/x86/genapic/x2apic.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
+index 7dfc7935..147b7251 100644
+--- a/xen/arch/x86/genapic/x2apic.c
++++ b/xen/arch/x86/genapic/x2apic.c
+@@ -235,15 +235,15 @@ const struct genapic *__init apic_x2apic_probe(void)
+ {
+     if ( x2apic_phys < 0 )
+     {
+-        /*
+-         * Force physical mode if there's no interrupt remapping support: The
+-         * ID in clustered mode requires a 32 bit destination field due to
+-         * the usage of the high 16 bits to hold the cluster ID.
+-         */
+-        x2apic_phys = !iommu_intremap ||
+-                      (acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL) ||
+-                      (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
+-                       !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
++         /*
++          * Force physical mode if there's no (full) interrupt remapping support:
++          * The ID in clustered mode requires a 32 bit destination field due to
++          * the usage of the high 16 bits to hold the cluster ID.
++          */
++        x2apic_phys = iommu_intremap != iommu_intremap_full ||
++                       (acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL) ||
++                       (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
++                        !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
+     }
+     else if ( !x2apic_phys )
+         switch ( iommu_intremap )
+-- 
+2.39.2
+
