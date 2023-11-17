@@ -208,13 +208,56 @@ index d9dae740..bb223129 100644
  mode.
  
 +**WARNING: `x2apic_phys` is deprecated and superseded by `x2apic-mode`.
+[user@archlinux xen-4.17.2]$ git diff HEAD  > ../X2APIC.patch 
+[user@archlinux xen-4.17.2]$ cat ../X2APIC.patch 
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 7f4d0f25..a37a2d0c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+  - The x86 MCE command line option info is now updated.
+ 
+ ### Added / support upgraded
++ - On x86:
++   - Introduce a new x2APIC driver that uses Cluster Logical addressing mode
++     for IPIs and Physical addressing mode for external interrupts.
+  - Out-of-tree builds for the hypervisor now supported.
+  - __ro_after_init support, for marking data as immutable after boot.
+  - The project has officially adopted 4 directives and 24 rules of MISRA-C,
+diff --git a/docs/misc/xen-command-line.pandoc b/docs/misc/xen-command-line.pandoc
+index d9dae740..bb223129 100644
+--- a/docs/misc/xen-command-line.pandoc
++++ b/docs/misc/xen-command-line.pandoc
+@@ -2742,6 +2742,17 @@ the watchdog.
+ 
+ Permit use of x2apic setup for SMP environments.
+ 
++### x2apic-mode (x86)
++> `= physical | cluster | mixed`
++
++> Default: `physical` if **FADT** mandates physical mode, otherwise set at
++>          build time by CONFIG_X2APIC_{PHYSICAL,LOGICAL,MIXED}.
++
++In the case that x2apic is in use, this option switches between modes to
++address APICs in the system as interrupt destinations.
++
++
++
+ ### x2apic_phys (x86)
+ > `= <boolean>`
+ 
+@@ -2752,6 +2763,9 @@ In the case that x2apic is in use, this option switches between physical and
+ clustered mode.  The default, given no hint from the **FADT**, is cluster
+ mode.
+ 
++**WARNING: `x2apic_phys` is deprecated and superseded by `x2apic-mode`.
 +The latter takes precedence if both are set.**
 +
  ### xenheap_megabytes (arm32)
  > `= <size>`
  
 diff --git a/xen/arch/x86/Kconfig b/xen/arch/x86/Kconfig
-index 2a5c3304..92cf0b85 100644
+index 2a5c3304..2a15a81b 100644
 --- a/xen/arch/x86/Kconfig
 +++ b/xen/arch/x86/Kconfig
 @@ -227,11 +227,19 @@ config XEN_ALIGN_2M
@@ -240,7 +283,7 @@ index 2a5c3304..92cf0b85 100644
  	  When using this mode APICs are addressed using the Physical
  	  Destination mode, which allows using all dynamic vectors on each
  	  CPU independently.
-@@ -241,7 +249,27 @@ config X2APIC_PHYSICAL
+@@ -241,9 +249,27 @@ config X2APIC_PHYSICAL
  	  destination inter processor interrupts (IPIs) slightly slower than
  	  Logical Destination mode.
  
@@ -262,13 +305,14 @@ index 2a5c3304..92cf0b85 100644
 +	help
 +	  When using this mode APICs are addressed using the Cluster Logical
 +	  Destination mode for IPIs and Physical mode for external interrupts.
-+
+ 
+-	  If unsure, say N.
 +	  Should provide the best of both modes.
 +
 +endchoice
  
- 	  If unsure, say N.
- 
+ config GUEST
+ 	bool
 diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
 index d512c50f..44d39d21 100644
 --- a/xen/arch/x86/genapic/x2apic.c
