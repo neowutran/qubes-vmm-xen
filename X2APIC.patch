@@ -168,24 +168,24 @@ Changes since v1:
  5 files changed, 119 insertions(+), 35 deletions(-)
 
 diff --git a/CHANGELOG.md b/CHANGELOG.md
-index b184dde8b15f..c341c9d0bf5d 100644
+index 7f4d0f25..a37a2d0c 100644
 --- a/CHANGELOG.md
 +++ b/CHANGELOG.md
-@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
- ### Changed
+@@ -14,6 +14,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+  - The x86 MCE command line option info is now updated.
  
- ### Added
+ ### Added / support upgraded
 + - On x86:
 +   - Introduce a new x2APIC driver that uses Cluster Logical addressing mode
 +     for IPIs and Physical addressing mode for external interrupts.
- 
- ### Removed
- 
+  - Out-of-tree builds for the hypervisor now supported.
+  - __ro_after_init support, for marking data as immutable after boot.
+  - The project has officially adopted 4 directives and 24 rules of MISRA-C,
 diff --git a/docs/misc/xen-command-line.pandoc b/docs/misc/xen-command-line.pandoc
-index 9a19a04157cb..8e65f8bd18bf 100644
+index d9dae740..bb223129 100644
 --- a/docs/misc/xen-command-line.pandoc
 +++ b/docs/misc/xen-command-line.pandoc
-@@ -2804,6 +2804,15 @@ the watchdog.
+@@ -2742,6 +2742,17 @@ the watchdog.
  
  Permit use of x2apic setup for SMP environments.
  
@@ -198,10 +198,12 @@ index 9a19a04157cb..8e65f8bd18bf 100644
 +In the case that x2apic is in use, this option switches between modes to
 +address APICs in the system as interrupt destinations.
 +
++
++
  ### x2apic_phys (x86)
  > `= <boolean>`
  
-@@ -2814,6 +2823,9 @@ In the case that x2apic is in use, this option switches between physical and
+@@ -2752,6 +2763,9 @@ In the case that x2apic is in use, this option switches between physical and
  clustered mode.  The default, given no hint from the **FADT**, is cluster
  mode.
  
@@ -212,32 +214,33 @@ index 9a19a04157cb..8e65f8bd18bf 100644
  > `= <size>`
  
 diff --git a/xen/arch/x86/Kconfig b/xen/arch/x86/Kconfig
-index eac77573bd75..1acdffc51c22 100644
+index 2a5c3304..92cf0b85 100644
 --- a/xen/arch/x86/Kconfig
 +++ b/xen/arch/x86/Kconfig
-@@ -228,11 +228,18 @@ config XEN_ALIGN_2M
+@@ -227,11 +227,19 @@ config XEN_ALIGN_2M
  
  endchoice
  
--config X2APIC_PHYSICAL
--	bool "x2APIC Physical Destination mode"
 +choice
 +	prompt "x2APIC Driver default"
 +	default X2APIC_MIXED
- 	help
--	  Use x2APIC Physical Destination mode by default when available.
++ 	help
 +	  Select APIC addressing when x2APIC is enabled.
 +
 +	  The default mode is mixed which should provide the best aspects
 +	  of both physical and cluster modes.
- 
-+config X2APIC_PHYSICAL
++
++
+ config X2APIC_PHYSICAL
+-	bool "x2APIC Physical Destination mode"
 +	bool "Physical Destination mode"
-+	help
+ 	help
+-	  Use x2APIC Physical Destination mode by default when available.
+-
  	  When using this mode APICs are addressed using the Physical
  	  Destination mode, which allows using all dynamic vectors on each
  	  CPU independently.
-@@ -242,9 +249,27 @@ config X2APIC_PHYSICAL
+@@ -241,7 +249,27 @@ config X2APIC_PHYSICAL
  	  destination inter processor interrupts (IPIs) slightly slower than
  	  Logical Destination mode.
  
@@ -253,8 +256,7 @@ index eac77573bd75..1acdffc51c22 100644
 +	  However the vector space is shared between all CPUs on the cluster,
 +	  and hence using this mode reduces the number of available vectors
 +	  when compared to Physical mode.
- 
--	  If unsure, say N.
++ 
 +config X2APIC_MIXED
 +	bool "Mixed Destination mode"
 +	help
@@ -265,30 +267,13 @@ index eac77573bd75..1acdffc51c22 100644
 +
 +endchoice
  
- config GUEST
- 	bool
-diff --git a/xen/arch/x86/apic.c b/xen/arch/x86/apic.c
-index f1264ce7ed1e..6acdd0ec1468 100644
---- a/xen/arch/x86/apic.c
-+++ b/xen/arch/x86/apic.c
-@@ -229,11 +229,7 @@ void __init connect_bsp_APIC(void)
-         outb(0x01, 0x23);
-     }
- 
--    printk("Enabling APIC mode:  %s.  Using %d I/O APICs\n",
--           !INT_DEST_MODE ? "Physical"
--                          : init_apic_ldr == init_apic_ldr_flat ? "Flat"
--                                                                : "Clustered",
--           nr_ioapics);
-+    printk("Enabling APIC mode.  Using %d I/O APICs\n", nr_ioapics);
-     enable_apic_mode();
- }
+ 	  If unsure, say N.
  
 diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
-index 707deef98c27..b88c7a96fe3e 100644
+index d512c50f..44d39d21 100644
 --- a/xen/arch/x86/genapic/x2apic.c
 +++ b/xen/arch/x86/genapic/x2apic.c
-@@ -180,6 +180,36 @@ static const struct genapic __initconstrel apic_x2apic_cluster = {
+@@ -191,6 +191,38 @@ static const struct genapic __initconstrel apic_x2apic_cluster = {
      .send_IPI_self = send_IPI_self_x2apic
  };
  
@@ -322,10 +307,12 @@ index 707deef98c27..b88c7a96fe3e 100644
 +    .send_IPI_self = send_IPI_self_x2apic,
 +};
 +
++
++
  static int cf_check update_clusterinfo(
      struct notifier_block *nfb, unsigned long action, void *hcpu)
  {
-@@ -220,38 +250,56 @@ static struct notifier_block x2apic_cpu_nfb = {
+@@ -231,39 +263,60 @@ static struct notifier_block x2apic_cpu_nfb = {
  static int8_t __initdata x2apic_phys = -1;
  boolean_param("x2apic_phys", x2apic_phys);
  
@@ -348,6 +335,8 @@ index 707deef98c27..b88c7a96fe3e 100644
 +}
 +custom_param("x2apic-mode", parse_x2apic_mode);
 +
++
++
  const struct genapic *__init apic_x2apic_probe(void)
  {
 -    if ( x2apic_phys < 0 )
@@ -364,7 +353,8 @@ index 707deef98c27..b88c7a96fe3e 100644
 -         */
 -        x2apic_phys = iommu_intremap != iommu_intremap_full ||
 -                      (acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL) ||
--                      IS_ENABLED(CONFIG_X2APIC_PHYSICAL);
+-                      (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
+-                       !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
 -    }
 -    else if ( !x2apic_phys )
 -        switch ( iommu_intremap )
@@ -378,17 +368,19 @@ index 707deef98c27..b88c7a96fe3e 100644
 -                                                        : "with restricted");
 -            x2apic_phys = true;
 -            break;
--
+ 
 -        case iommu_intremap_full:
 -            break;
+-        }
 +            printk(XENLOG_INFO "ACPI FADT forcing x2APIC physical mode\n");
 +            x2apic_mode = physical;
-         }
++         }
 +        else
 +            x2apic_mode = IS_ENABLED(CONFIG_X2APIC_MIXED) ? mixed
 +                          : (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) ? physical
 +                                                                : cluster);
 +    }
++
  
 -    if ( x2apic_phys )
 +    if ( x2apic_mode == physical )
@@ -406,12 +398,13 @@ index 707deef98c27..b88c7a96fe3e 100644
      if ( !this_cpu(cluster_cpus) )
      {
          update_clusterinfo(NULL, CPU_UP_PREPARE,
-@@ -260,7 +308,7 @@ const struct genapic *__init apic_x2apic_probe(void)
+@@ -272,7 +325,8 @@ const struct genapic *__init apic_x2apic_probe(void)
          register_cpu_notifier(&x2apic_cpu_nfb);
      }
  
 -    return &apic_x2apic_cluster;
 +    return x2apic_mode == cluster ? &apic_x2apic_cluster : &apic_x2apic_mixed;
++
  }
  
  void __init check_x2apic_preenabled(void)
