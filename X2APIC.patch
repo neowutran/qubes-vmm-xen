@@ -271,7 +271,7 @@ index 2a5c3304..2a15a81b 100644
  config GUEST
  	bool
 diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
-index d512c50f..44d39d21 100644
+index d512c50f..6dc3dc6e 100644
 --- a/xen/arch/x86/genapic/x2apic.c
 +++ b/xen/arch/x86/genapic/x2apic.c
 @@ -191,6 +191,38 @@ static const struct genapic __initconstrel apic_x2apic_cluster = {
@@ -313,7 +313,7 @@ index d512c50f..44d39d21 100644
  static int cf_check update_clusterinfo(
      struct notifier_block *nfb, unsigned long action, void *hcpu)
  {
-@@ -231,39 +263,60 @@ static struct notifier_block x2apic_cpu_nfb = {
+@@ -231,48 +263,86 @@ static struct notifier_block x2apic_cpu_nfb = {
  static int8_t __initdata x2apic_phys = -1;
  boolean_param("x2apic_phys", x2apic_phys);
  
@@ -341,12 +341,7 @@ index d512c50f..44d39d21 100644
  const struct genapic *__init apic_x2apic_probe(void)
  {
 -    if ( x2apic_phys < 0 )
-+    /* Honour the legacy cmdline setting if it's the only one provided. */
-+    if ( x2apic_mode == unset && x2apic_phys >= 0 )
-+        x2apic_mode = x2apic_phys ? physical : cluster;
-+
-+    if ( x2apic_mode == unset )
-     {
+-    {
 -        /*
 -         * Force physical mode if there's no (full) interrupt remapping support:
 -         * The ID in clustered mode requires a 32 bit destination field due to
@@ -356,9 +351,22 @@ index d512c50f..44d39d21 100644
 -                      (acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL) ||
 -                      (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
 -                       !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
--    }
++    /* Honour the legacy cmdline setting if it's the only one provided. */
++    printk("NEOWUTRAN: X2APIC_MODE: %d \n", x2apic_mode);
++    printk("NEOWUTRAN: X2APIC_PHYS: %d \n", x2apic_phys);
++    printk("NEOWUTRAN: acpi_gbl_FADT.flags: %d \n", acpi_gbl_FADT.flags);
++    printk("NEOWUTRAN IOMMU_INTREMAP: %s \n", iommu_intremap == iommu_intremap_off ? "same" : "different");
++
++    if ( x2apic_mode == unset && x2apic_phys >= 0 ){
++        printk("Neowutran: PASSE 1 \n");
++        x2apic_mode = x2apic_phys ? physical : cluster;
+     }
 -    else if ( !x2apic_phys )
 -        switch ( iommu_intremap )
++
++    if ( x2apic_mode == unset )
++    {
++        printk("Neowutran: PASSE 2 \n");
 +        if ( acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL )
          {
 -        case iommu_intremap_off:
@@ -372,34 +380,42 @@ index d512c50f..44d39d21 100644
  
 -        case iommu_intremap_full:
 -            break;
--        }
++            printk("Neowutran: PASSE 3 \n");
 +            printk(XENLOG_INFO "ACPI FADT forcing x2APIC physical mode\n");
 +            x2apic_mode = physical;
 +         }
-+        else
++        else{
++            printk("Neowutran: PASSE 4 \n");
 +            x2apic_mode = IS_ENABLED(CONFIG_X2APIC_MIXED) ? mixed
 +                          : (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) ? physical
 +                                                                : cluster);
++           printk("NEOWUTRAN: X2APIC_MODE: %d \n", x2apic_mode);
+         }
 +    }
-+
  
 -    if ( x2apic_phys )
-+    if ( x2apic_mode == physical )
++
++    if ( x2apic_mode == physical ){
++        printk("Neowutran: PASSE 5 \n");
          return &apic_x2apic_phys;
- 
++    }
++
 +    if ( x2apic_mode == cluster && iommu_intremap != iommu_intremap_full )
 +    {
++        printk("Neowutran: PASSE 6 \n");
 +        printk("WARNING: x2APIC cluster mode is not supported %s interrupt remapping -"
 +               " forcing mixed mode\n",
 +               iommu_intremap == iommu_intremap_off ? "without"
 +                                                    : "with restricted");
 +        x2apic_mode = mixed;
 +    }
-+
+ 
      if ( !this_cpu(cluster_cpus) )
      {
++        printk("Neowutran: PASSE 7 \n");
          update_clusterinfo(NULL, CPU_UP_PREPARE,
-@@ -272,7 +325,8 @@ const struct genapic *__init apic_x2apic_probe(void)
+                            (void *)(long)smp_processor_id());
+         init_apic_ldr_x2apic_cluster();
          register_cpu_notifier(&x2apic_cpu_nfb);
      }
  
