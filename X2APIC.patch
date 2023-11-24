@@ -1,17 +1,69 @@
 diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
-index d512c50f..15a62f87 100644
+index d512c50f..f362064b 100644
 --- a/xen/arch/x86/genapic/x2apic.c
 +++ b/xen/arch/x86/genapic/x2apic.c
-@@ -242,8 +242,7 @@ const struct genapic *__init apic_x2apic_probe(void)
+@@ -233,8 +233,12 @@ boolean_param("x2apic_phys", x2apic_phys);
+ 
+ const struct genapic *__init apic_x2apic_probe(void)
+ {
++printk("NEOWUTRAN2: X2APIC_PHYS: %d \n", x2apic_phys);
++    printk("NEOWUTRAN2: acpi_gbl_FADT.flags: %d \n", acpi_gbl_FADT.flags);
++    printk("NEOWUTRAN2 IOMMU_INTREMAP: %s \n", iommu_intremap == iommu_intremap_off ? "same" : "different");
+     if ( x2apic_phys < 0 )
+-    {
++    { 
++        printk("Neowutran2: Passe 1 \n");
+         /*
+          * Force physical mode if there's no (full) interrupt remapping support:
+          * The ID in clustered mode requires a 32 bit destination field due to
+@@ -242,10 +246,11 @@ const struct genapic *__init apic_x2apic_probe(void)
           */
          x2apic_phys = iommu_intremap != iommu_intremap_full ||
                        (acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL) ||
 -                      (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
 -                       !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
 +                      IS_ENABLED(CONFIG_X2APIC_PHYSICAL);
++        printk("NEOWUTRAN2: X2APIC_PHYS: %d \n", x2apic_phys);
      }
-     else if ( !x2apic_phys )
+-    else if ( !x2apic_phys )
++    else if ( !x2apic_phys ){
++        printk("Neowutran2: Passe 2 \n");
          switch ( iommu_intremap )
+         {
+         case iommu_intremap_off:
+@@ -255,23 +260,30 @@ const struct genapic *__init apic_x2apic_probe(void)
+                    iommu_intremap == iommu_intremap_off ? "without"
+                                                         : "with restricted");
+             x2apic_phys = true;
++            printk("Neowutran2: Passe 3 \n");
+             break;
+ 
+         case iommu_intremap_full:
++            printk("Neowutran2: Passe 4 \n");
+             break;
+         }
++    }
+ 
+-    if ( x2apic_phys )
++    if ( x2apic_phys ){
++        printk("Neowutran2: Passe 5 \n");
+         return &apic_x2apic_phys;
++    }
+ 
+     if ( !this_cpu(cluster_cpus) )
+     {
++        printk("Neowutran2: Passe 6 \n");
+         update_clusterinfo(NULL, CPU_UP_PREPARE,
+                            (void *)(long)smp_processor_id());
+         init_apic_ldr_x2apic_cluster();
+         register_cpu_notifier(&x2apic_cpu_nfb);
+     }
+-
++    
++    printk("Neowutran2: Passe 7 \n");
+     return &apic_x2apic_cluster;
+ }
+ 
 
 -- 
 2.42.0
