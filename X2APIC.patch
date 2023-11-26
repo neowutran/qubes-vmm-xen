@@ -1,3 +1,5 @@
+
+
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
 index 257a6feb..030b500c 100644
 --- a/tools/firmware/hvmloader/pci.c
@@ -167,3 +169,5 @@ index 44d39d21..6dc3dc6e 100644
          update_clusterinfo(NULL, CPU_UP_PREPARE,
                             (void *)(long)smp_processor_id());
          init_apic_ldr_x2apic_cluster();
+--
+2.4
