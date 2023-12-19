@@ -91,9 +91,18 @@ index 03b464da..07c92442 100644
           * Try to accommodate RMRRs in our MMIO region on a best-effort basis.
           * If we have RMRRs in the range, then make pci_mem_start just after
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
-index fc264a3a..3af6c566 100644
+index fc264a3a..dba85434 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
+@@ -2571,7 +2571,7 @@ static void spawn_stub_launch_dm(libxl__egc *egc,
+      * Until xenconsoled learns how to handle multiple consoles, require qemu
+      * in dom0 to serve consoles for a stubdomain - it require at least 3 of them.
+      */
+-    need_qemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
++    need_qemu = libxl__need_xenpv_qemu(gc, &sdss->dm_config);
+ 
+     for (i = 0; i < num_console; i++) {
+         libxl__device device;
 @@ -2702,31 +2702,42 @@ static void qmp_proxy_spawn_outcome(libxl__egc *egc,
                                      libxl__stub_dm_spawn_state *sdss,
                                      int rc)
@@ -106,7 +115,8 @@ index fc264a3a..3af6c566 100644
       * Until xenconsoled learns how to handle multiple consoles, require qemu
       * in dom0 to serve consoles for a stubdomain - it require at least 3 of them.
       */
-     int need_pvqemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
+-    int need_pvqemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
++    int need_pvqemu = libxl__need_xenpv_qemu(gc, &sdss->dm_config);
 +    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 2 \n");
  
      if (rc) goto out;
