@@ -45,48 +45,188 @@ index d9dae740..bb223129 100644
  > `= <size>`
  
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 257a6feb..9855c78b 100644
+index 03b464da..07c92442 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
-@@ -118,7 +118,7 @@ void pci_setup(void)
-      * Since xend can only use qemu-traditional, I think this is the
-      * option that will have the least impact.
-      */
--    bool allow_memory_relocate = 1;
-+    bool allow_memory_relocate = 0;
- 
-     BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_IO !=
-                  PCI_COMMAND_IO);
-@@ -127,12 +127,14 @@ void pci_setup(void)
-     BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_MASTER !=
-                  PCI_COMMAND_MASTER);
- 
-+    /*
-     s = xenstore_read(HVM_XS_ALLOW_MEMORY_RELOCATE, NULL);
-     if ( s )
-         allow_memory_relocate = strtoll(s, NULL, 0);
-     printf("Relocating guest memory for lowmem MMIO space %s\n",
+@@ -139,8 +139,10 @@ void pci_setup(void)
             allow_memory_relocate?"enabled":"disabled");
--
-+*/
-+    allow_memory_relocate = 0;
+ 
      s = xenstore_read("platform/mmio_hole_size", NULL);
-     if ( s )
+-    if ( s )
++    if ( s ){
++        printf("NEOWUTRAN pci.c: modifying mmio hole size\n");
          mmio_hole_size = strtoll(s, NULL, 0);
-@@ -354,8 +356,12 @@ void pci_setup(void)
++    }
+ 
+     /* Program PCI-ISA bridge with appropriate link routes. */
+     isa_irq = 0;
+@@ -355,6 +357,13 @@ void pci_setup(void)
+          *   big enough, or until it's 2GiB, or until it overlaps guest
+          *   memory
+          */
++        printf("NEOWUTRAN pci.c: mmio_total: %d\n",mmio_total);
++        printf("NEOWUTRAN pci.c: pci_mem_end: %d\n",pci_mem_end);
++        printf("NEOWUTRAN pci.c: pci_mem_start: %d\n",pci_mem_start);
++        printf("NEOWUTRAN pci.c: allow_memory_relocate: %d\n",allow_memory_relocate);
++        printf("NEOWUTRAN pci.c: hvm_info->low_mem_pgend: %d\n",hvm_info->low_mem_pgend);
++
++
+         while ( (mmio_total > (pci_mem_end - pci_mem_start))
                  && ((pci_mem_start << 1) != 0)
                  && (allow_memory_relocate
-                     || (((pci_mem_start << 1) >> PAGE_SHIFT)
--                        >= hvm_info->low_mem_pgend)) )
-+                        >= hvm_info->low_mem_pgend)) ){
+@@ -362,6 +371,15 @@ void pci_setup(void)
+                         >= hvm_info->low_mem_pgend)) )
              pci_mem_start <<= 1;
-+	}
-+        if ( ((pci_mem_start << 1) >> PAGE_SHIFT)  >= hvm_info->low_mem_pgend ){
-+             printf("NEOWUTRAN !!! THE THING TRIED TO POSSIBLY CORRUPT GUEST MEMORY !! ");
-+        }
  
++         if ( (mmio_total > (pci_mem_end - pci_mem_start))
++                && ((pci_mem_start << 1) != 0)
++                && (1
++                    || (((pci_mem_start << 1) >> PAGE_SHIFT)
++                        >= hvm_info->low_mem_pgend)) ){
++	       printf("NEOWUTRAN pci.c: HVM_LOADER would have tried to relocate guest memory\n");
++
++	}
++
          /*
           * Try to accommodate RMRRs in our MMIO region on a best-effort basis.
+          * If we have RMRRs in the range, then make pci_mem_start just after
+diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
+index fc264a3a..3af6c566 100644
+--- a/tools/libs/light/libxl_dm.c
++++ b/tools/libs/light/libxl_dm.c
+@@ -2702,31 +2702,42 @@ static void qmp_proxy_spawn_outcome(libxl__egc *egc,
+                                     libxl__stub_dm_spawn_state *sdss,
+                                     int rc)
+ {
++
+     STATE_AO_GC(sdss->dm.spawn.ao);
++    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
++
+     /*
+      * Until xenconsoled learns how to handle multiple consoles, require qemu
+      * in dom0 to serve consoles for a stubdomain - it require at least 3 of them.
+      */
+     int need_pvqemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
++    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 2 \n");
+ 
+     if (rc) goto out;
++    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 3 \n");
+ 
+     if (need_pvqemu < 0) {
++       LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 4 \n");
++
+         rc = need_pvqemu;
+         goto out;
+     }
++    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 5 \n");
+ 
+     sdss->pvqemu.spawn.ao = ao;
+     sdss->pvqemu.guest_config = &sdss->dm_config;
+     sdss->pvqemu.build_state = &sdss->dm_state;
+     sdss->pvqemu.callback = spawn_stubdom_pvqemu_cb;
+     if (need_pvqemu) {
++      LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 6 \n");
++
+         libxl__spawn_local_dm(egc, &sdss->pvqemu);
+     } else {
++        LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 7 \n");
++
+         /* If dom0 qemu not needed, do not launch it */
+         spawn_stubdom_pvqemu_cb(egc, &sdss->pvqemu, 0);
+     }
+-
+     return;
+ 
+ out:
+@@ -2884,44 +2895,77 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
+     const char *dm;
+     int dm_state_fd = -1;
+ 
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: enter\n");
++
+     dmss_init(dmss);
+ 
+     if (libxl_defbool_val(b_info->device_model_stubdomain)) {
++        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 1");
+         abort();
+     }
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 1");
+ 
+     dm = libxl__domain_device_model(gc, b_info);
+     if (!dm) {
++        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 2");
+         rc = ERROR_FAIL;
+         goto out;
+     }
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 2");
++
+     if (access(dm, X_OK) < 0) {
+         LOGED(ERROR, domid, "device model %s is not executable", dm);
+         rc = ERROR_FAIL;
+         goto out;
+     }
+ 
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 3");
++
++
+     rc = libxl__domain_get_device_model_uid(gc, dmss);
+-    if (rc)
++    if (rc){
++       LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 3");
++
+         goto out;
++    }
++
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 4\n");
++
+ 
+     if (b_info->device_model_version
+             == LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN &&
+         libxl_defbool_val(b_info->dm_restrict)) {
++        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 4\n");
++
+         /* If we have to use dm_restrict, QEMU needs to be new enough
+          * and will have the new interface where we can pre-open the
+          * QMP socket. */
+         rc = libxl__pre_open_qmp_socket(gc, domid, &state->dm_monitor_fd);
+         if (rc) goto out;
+     }
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASSS 5\n");
+ 
+     rc = libxl__build_device_model_args(gc, dm, domid, guest_config,
+                                           &args, &envs, state,
+                                           &dm_state_fd);
+-    if (rc)
++    if (rc){
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 6\n");
++
+         goto out;
+ 
++   }
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 6\n");
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: b_info->type: %d\n", b_info->type);
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: HVM TYPE: %d\n", LIBXL_DOMAIN_TYPE_HVM);
++
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: b_info->device_model_version: %d\n", b_info->device_model_version);
++    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: XEN_TRADITIONAL: %d\n", LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN_TRADITIONAL);
++
++
++
+     if (b_info->type == LIBXL_DOMAIN_TYPE_HVM) {
++        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 7");
++
+         path = xs_get_domain_path(ctx->xsh, domid);
+         libxl__xs_printf(gc, XBT_NULL,
+                          GCSPRINTF("%s/hvmloader/bios", path),
+@@ -2929,6 +2973,8 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
+         /* Disable relocating memory to make the MMIO hole larger
+          * unless we're running qemu-traditional and vNUMA is not
+          * configured. */
++       LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: wanted value should be correctly defined");
++
+         libxl__xs_printf(gc, XBT_NULL,
+                          GCSPRINTF("%s/hvmloader/allow-memory-relocate", path),
+                          "%d",
 diff --git a/xen/arch/x86/Kconfig b/xen/arch/x86/Kconfig
 index 2a5c3304..2a15a81b 100644
 --- a/xen/arch/x86/Kconfig
@@ -145,7 +285,7 @@ index 2a5c3304..2a15a81b 100644
  config GUEST
  	bool
 diff --git a/xen/arch/x86/genapic/x2apic.c b/xen/arch/x86/genapic/x2apic.c
-index d512c50f..6dc3dc6e 100644
+index d512c50f..ab1248a4 100644
 --- a/xen/arch/x86/genapic/x2apic.c
 +++ b/xen/arch/x86/genapic/x2apic.c
 @@ -191,6 +191,38 @@ static const struct genapic __initconstrel apic_x2apic_cluster = {
@@ -187,7 +327,7 @@ index d512c50f..6dc3dc6e 100644
  static int cf_check update_clusterinfo(
      struct notifier_block *nfb, unsigned long action, void *hcpu)
  {
-@@ -231,48 +263,86 @@ static struct notifier_block x2apic_cpu_nfb = {
+@@ -231,38 +263,62 @@ static struct notifier_block x2apic_cpu_nfb = {
  static int8_t __initdata x2apic_phys = -1;
  boolean_param("x2apic_phys", x2apic_phys);
  
@@ -226,13 +366,7 @@ index d512c50f..6dc3dc6e 100644
 -                      (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) &&
 -                       !(acpi_gbl_FADT.flags & ACPI_FADT_APIC_CLUSTER));
 +    /* Honour the legacy cmdline setting if it's the only one provided. */
-+    printk("NEOWUTRAN: X2APIC_MODE: %d \n", x2apic_mode);
-+    printk("NEOWUTRAN: X2APIC_PHYS: %d \n", x2apic_phys);
-+    printk("NEOWUTRAN: acpi_gbl_FADT.flags: %d \n", acpi_gbl_FADT.flags);
-+    printk("NEOWUTRAN IOMMU_INTREMAP: %s \n", iommu_intremap == iommu_intremap_off ? "same" : "different");
-+
 +    if ( x2apic_mode == unset && x2apic_phys >= 0 ){
-+        printk("Neowutran: PASSE 1 \n");
 +        x2apic_mode = x2apic_phys ? physical : cluster;
      }
 -    else if ( !x2apic_phys )
@@ -240,7 +374,6 @@ index d512c50f..6dc3dc6e 100644
 +
 +    if ( x2apic_mode == unset )
 +    {
-+        printk("Neowutran: PASSE 2 \n");
 +        if ( acpi_gbl_FADT.flags & ACPI_FADT_APIC_PHYSICAL )
          {
 -        case iommu_intremap_off:
@@ -254,29 +387,24 @@ index d512c50f..6dc3dc6e 100644
  
 -        case iommu_intremap_full:
 -            break;
-+            printk("Neowutran: PASSE 3 \n");
 +            printk(XENLOG_INFO "ACPI FADT forcing x2APIC physical mode\n");
 +            x2apic_mode = physical;
 +         }
 +        else{
-+            printk("Neowutran: PASSE 4 \n");
 +            x2apic_mode = IS_ENABLED(CONFIG_X2APIC_MIXED) ? mixed
 +                          : (IS_ENABLED(CONFIG_X2APIC_PHYSICAL) ? physical
 +                                                                : cluster);
-+           printk("NEOWUTRAN: X2APIC_MODE: %d \n", x2apic_mode);
          }
 +    }
  
 -    if ( x2apic_phys )
 +
 +    if ( x2apic_mode == physical ){
-+        printk("Neowutran: PASSE 5 \n");
          return &apic_x2apic_phys;
 +    }
 +
 +    if ( x2apic_mode == cluster && iommu_intremap != iommu_intremap_full )
 +    {
-+        printk("Neowutran: PASSE 6 \n");
 +        printk("WARNING: x2APIC cluster mode is not supported %s interrupt remapping -"
 +               " forcing mixed mode\n",
 +               iommu_intremap == iommu_intremap_off ? "without"
@@ -286,10 +414,7 @@ index d512c50f..6dc3dc6e 100644
  
      if ( !this_cpu(cluster_cpus) )
      {
-+        printk("Neowutran: PASSE 7 \n");
-         update_clusterinfo(NULL, CPU_UP_PREPARE,
-                            (void *)(long)smp_processor_id());
-         init_apic_ldr_x2apic_cluster();
+@@ -272,7 +328,8 @@ const struct genapic *__init apic_x2apic_probe(void)
          register_cpu_notifier(&x2apic_cpu_nfb);
      }
  
@@ -299,6 +424,3 @@ index d512c50f..6dc3dc6e 100644
  }
  
  void __init check_x2apic_preenabled(void)
-
---
-2.4
