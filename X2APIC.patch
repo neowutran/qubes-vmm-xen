@@ -91,7 +91,7 @@ index 03b464da..07c92442 100644
           * Try to accommodate RMRRs in our MMIO region on a best-effort basis.
           * If we have RMRRs in the range, then make pci_mem_start just after
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
-index fc264a3a..3cdb45a6 100644
+index fc264a3a..ac785e1d 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
 @@ -2571,7 +2571,7 @@ static void spawn_stub_launch_dm(libxl__egc *egc,
@@ -107,7 +107,7 @@ index fc264a3a..3cdb45a6 100644
                                      libxl__stub_dm_spawn_state *sdss,
                                      int rc)
  {
-+    const int domid = dmss->guest_domid;
++    const int domid = &sdss->pvqemu->guest_domid;
      STATE_AO_GC(sdss->dm.spawn.ao);
 +    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
 +
