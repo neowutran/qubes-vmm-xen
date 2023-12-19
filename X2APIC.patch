@@ -45,7 +45,7 @@ index d9dae740..bb223129 100644
  > `= <size>`
  
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 03b464da..07c92442 100644
+index 03b464da..22c120b8 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
 @@ -139,8 +139,10 @@ void pci_setup(void)
@@ -64,11 +64,11 @@ index 03b464da..07c92442 100644
           *   big enough, or until it's 2GiB, or until it overlaps guest
           *   memory
           */
-+        printf("NEOWUTRAN pci.c: mmio_total: %d\n",mmio_total);
-+        printf("NEOWUTRAN pci.c: pci_mem_end: %d\n",pci_mem_end);
-+        printf("NEOWUTRAN pci.c: pci_mem_start: %d\n",pci_mem_start);
-+        printf("NEOWUTRAN pci.c: allow_memory_relocate: %d\n",allow_memory_relocate);
-+        printf("NEOWUTRAN pci.c: hvm_info->low_mem_pgend: %d\n",hvm_info->low_mem_pgend);
++        printf("NEOWUTRAN pci.c: mmio_total: %lld\n",mmio_total);
++        printf("NEOWUTRAN pci.c: pci_mem_end: %lld\n",pci_mem_end);
++        printf("NEOWUTRAN pci.c: pci_mem_start: %lld\n",pci_mem_start);
++        printf("NEOWUTRAN pci.c: allow_memory_relocate: %lld\n",allow_memory_relocate);
++        printf("NEOWUTRAN pci.c: hvm_info->low_mem_pgend: %lld\n",hvm_info->low_mem_pgend);
 +
 +
          while ( (mmio_total > (pci_mem_end - pci_mem_start))
@@ -91,7 +91,7 @@ index 03b464da..07c92442 100644
           * Try to accommodate RMRRs in our MMIO region on a best-effort basis.
           * If we have RMRRs in the range, then make pci_mem_start just after
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
-index fc264a3a..ac785e1d 100644
+index fc264a3a..1427ea83 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
 @@ -2571,7 +2571,7 @@ static void spawn_stub_launch_dm(libxl__egc *egc,
@@ -107,7 +107,7 @@ index fc264a3a..ac785e1d 100644
                                      libxl__stub_dm_spawn_state *sdss,
                                      int rc)
  {
-+    const int domid =   sdss->pvqemu.guest_domid;
++    const int domid = sdss->pvqemu.guest_domid;
      STATE_AO_GC(sdss->dm.spawn.ao);
 +    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
 +
