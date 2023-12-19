@@ -144,7 +144,7 @@ Patch0620: 0620-libxl-Add-additional-domain-suspend-resume-logs.patch
 Patch0621: 0621-libxl-workaround-for-Windows-PV-drivers-removing-con.patch
 Patch0622: 0622-libxl-check-control-feature-before-issuing-pvcontrol.patch
 Patch0623: 0623-tools-kdd-mute-spurious-gcc-warning.patch
-Patch0624: 0624-libxl-do-not-start-qemu-in-dom0-just-for-extra-conso.patch
+#Patch0624: 0624-libxl-do-not-start-qemu-in-dom0-just-for-extra-conso.patch
 Patch0625: 0625-libxl-Allow-stubdomain-to-control-interupts-of-PCI-d.patch
 Patch0626: 0626-Validate-EFI-memory-descriptors.patch
 Patch0627: 0627-x86-mm-Avoid-hard-coding-PAT-in-get_page_from_l1e.patch
