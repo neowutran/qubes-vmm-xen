@@ -45,7 +45,7 @@ index d9dae740..bb223129 100644
  > `= <size>`
  
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 03b464da..22c120b8 100644
+index 03b464da..47db776c 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
 @@ -139,8 +139,10 @@ void pci_setup(void)
@@ -65,10 +65,10 @@ index 03b464da..22c120b8 100644
           *   memory
           */
 +        printf("NEOWUTRAN pci.c: mmio_total: %lld\n",mmio_total);
-+        printf("NEOWUTRAN pci.c: pci_mem_end: %lld\n",pci_mem_end);
-+        printf("NEOWUTRAN pci.c: pci_mem_start: %lld\n",pci_mem_start);
-+        printf("NEOWUTRAN pci.c: allow_memory_relocate: %lld\n",allow_memory_relocate);
-+        printf("NEOWUTRAN pci.c: hvm_info->low_mem_pgend: %lld\n",hvm_info->low_mem_pgend);
++        printf("NEOWUTRAN pci.c: pci_mem_end: %d\n",pci_mem_end);
++        printf("NEOWUTRAN pci.c: pci_mem_start: %d\n",pci_mem_start);
++        printf("NEOWUTRAN pci.c: allow_memory_relocate: %d\n",allow_memory_relocate);
++        printf("NEOWUTRAN pci.c: hvm_info->low_mem_pgend: %d\n",hvm_info->low_mem_pgend);
 +
 +
          while ( (mmio_total > (pci_mem_end - pci_mem_start))
