@@ -107,7 +107,7 @@ index fc264a3a..ac785e1d 100644
                                      libxl__stub_dm_spawn_state *sdss,
                                      int rc)
  {
-+    const int domid =  &sdss->pvqemu.guest_domid;
++    const int domid =   sdss->pvqemu.guest_domid;
      STATE_AO_GC(sdss->dm.spawn.ao);
 +    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
 +
