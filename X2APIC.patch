@@ -45,24 +45,10 @@ index d9dae740..bb223129 100644
  > `= <size>`
  
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 03b464da..0054be6b 100644
+index 257a6feb..ca0dc9d5 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
-@@ -118,13 +118,6 @@ void pci_setup(void)
-      * Since xend can only use qemu-traditional, I think this is the
-      * option that will have the least impact.
-      */
--    /*
--     *  For QubesOS we default to 0. qemu-traditional is not used. 
--     *  Settings this parameter to 1 can result in memory corruption
--     *  in the guest when passingthrough big pci device like GPU.
--     */
--    bool allow_memory_relocate = 0;
--
-     BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_IO !=
-                  PCI_COMMAND_IO);
-     BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_MEMORY !=
-@@ -139,8 +132,10 @@ void pci_setup(void)
+@@ -134,8 +134,10 @@ void pci_setup(void)
             allow_memory_relocate?"enabled":"disabled");
  
      s = xenstore_read("platform/mmio_hole_size", NULL);
@@ -74,7 +60,7 @@ index 03b464da..0054be6b 100644
  
      /* Program PCI-ISA bridge with appropriate link routes. */
      isa_irq = 0;
-@@ -355,6 +350,13 @@ void pci_setup(void)
+@@ -350,6 +352,13 @@ void pci_setup(void)
           *   big enough, or until it's 2GiB, or until it overlaps guest
           *   memory
           */
@@ -88,7 +74,7 @@ index 03b464da..0054be6b 100644
          while ( (mmio_total > (pci_mem_end - pci_mem_start))
                  && ((pci_mem_start << 1) != 0)
                  && (allow_memory_relocate
-@@ -362,6 +364,16 @@ void pci_setup(void)
+@@ -357,6 +366,16 @@ void pci_setup(void)
                          >= hvm_info->low_mem_pgend)) )
              pci_mem_start <<= 1;
  
