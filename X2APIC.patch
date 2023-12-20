@@ -45,19 +45,24 @@ index d9dae740..bb223129 100644
  > `= <size>`
  
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 03b464da..88645667 100644
+index 03b464da..0054be6b 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
-@@ -123,7 +123,7 @@ void pci_setup(void)
-      *  Settings this parameter to 1 can result in memory corruption
-      *  in the guest when passingthrough big pci device like GPU.
+@@ -118,13 +118,6 @@ void pci_setup(void)
+      * Since xend can only use qemu-traditional, I think this is the
+      * option that will have the least impact.
       */
--    bool allow_memory_relocate = 1;
-+    bool allow_memory_relocate = 0;
- 
+-    /*
+-     *  For QubesOS we default to 0. qemu-traditional is not used. 
+-     *  Settings this parameter to 1 can result in memory corruption
+-     *  in the guest when passingthrough big pci device like GPU.
+-     */
+-    bool allow_memory_relocate = 0;
+-
      BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_IO !=
                   PCI_COMMAND_IO);
-@@ -139,8 +139,10 @@ void pci_setup(void)
+     BUILD_BUG_ON((typeof(*pci_devfn_decode_type))PCI_COMMAND_MEMORY !=
+@@ -139,8 +132,10 @@ void pci_setup(void)
             allow_memory_relocate?"enabled":"disabled");
  
      s = xenstore_read("platform/mmio_hole_size", NULL);
@@ -69,7 +74,7 @@ index 03b464da..88645667 100644
  
      /* Program PCI-ISA bridge with appropriate link routes. */
      isa_irq = 0;
-@@ -355,6 +357,13 @@ void pci_setup(void)
+@@ -355,6 +350,13 @@ void pci_setup(void)
           *   big enough, or until it's 2GiB, or until it overlaps guest
           *   memory
           */
@@ -83,7 +88,7 @@ index 03b464da..88645667 100644
          while ( (mmio_total > (pci_mem_end - pci_mem_start))
                  && ((pci_mem_start << 1) != 0)
                  && (allow_memory_relocate
-@@ -362,6 +371,15 @@ void pci_setup(void)
+@@ -362,6 +364,16 @@ void pci_setup(void)
                          >= hvm_info->low_mem_pgend)) )
              pci_mem_start <<= 1;
  
@@ -93,6 +98,7 @@ index 03b464da..88645667 100644
 +                    || (((pci_mem_start << 1) >> PAGE_SHIFT)
 +                        >= hvm_info->low_mem_pgend)) ){
 +	       printf("NEOWUTRAN pci.c: HVM_LOADER would have tried to relocate guest memory\n");
++               printf("NEOWUTRAN pci.c: pci_mem_start: %d\n",pci_mem_start);
 +
 +	}
 +
@@ -100,10 +106,21 @@ index 03b464da..88645667 100644
           * Try to accommodate RMRRs in our MMIO region on a best-effort basis.
           * If we have RMRRs in the range, then make pci_mem_start just after
 diff --git a/tools/libs/light/libxl_dm.c b/tools/libs/light/libxl_dm.c
-index fc264a3a..4b625800 100644
+index fc264a3a..0535688e 100644
 --- a/tools/libs/light/libxl_dm.c
 +++ b/tools/libs/light/libxl_dm.c
-@@ -2571,7 +2571,7 @@ static void spawn_stub_launch_dm(libxl__egc *egc,
+@@ -2431,6 +2431,10 @@ void libxl__spawn_stub_dm(libxl__egc *egc, libxl__stub_dm_spawn_state *sdss)
+                                        libxl__xs_get_dompath(gc, guest_domid)),
+                         "%s",
+                         libxl_bios_type_to_string(guest_config->b_info.u.hvm.bios));
++        libxl__xs_printf(gc, XBT_NULL,
++                         libxl__sprintf(gc, "%s/hvmloader/allow-memory-relocate", libxl__xs_get_dompath(gc, guest_domid)),
++                         "%d",
++                         0);
+     }
+     ret = xc_domain_set_target(ctx->xch, dm_domid, guest_domid);
+     if (ret<0) {
+@@ -2571,7 +2575,7 @@ static void spawn_stub_launch_dm(libxl__egc *egc,
       * Until xenconsoled learns how to handle multiple consoles, require qemu
       * in dom0 to serve consoles for a stubdomain - it require at least 3 of them.
       */
@@ -112,14 +129,12 @@ index fc264a3a..4b625800 100644
  
      for (i = 0; i < num_console; i++) {
          libxl__device device;
-@@ -2702,31 +2702,43 @@ static void qmp_proxy_spawn_outcome(libxl__egc *egc,
+@@ -2702,16 +2706,19 @@ static void qmp_proxy_spawn_outcome(libxl__egc *egc,
                                      libxl__stub_dm_spawn_state *sdss,
                                      int rc)
  {
 +    const int domid = sdss->pvqemu.guest_domid;
      STATE_AO_GC(sdss->dm.spawn.ao);
-+    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
-+    printf("NEOWUTRAN: PRE ENTER FUNCTION: 42\n");
 +
      /*
       * Until xenconsoled learns how to handle multiple consoles, require qemu
@@ -127,29 +142,21 @@ index fc264a3a..4b625800 100644
       */
 -    int need_pvqemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
 +    int need_pvqemu = libxl__need_xenpv_qemu(gc, &sdss->dm_config);
-+    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 2 \n");
  
      if (rc) goto out;
-+    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 3 \n");
  
      if (need_pvqemu < 0) {
-+       LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 4 \n");
 +
          rc = need_pvqemu;
          goto out;
      }
-+    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 5 \n");
- 
-     sdss->pvqemu.spawn.ao = ao;
-     sdss->pvqemu.guest_config = &sdss->dm_config;
+@@ -2721,12 +2728,13 @@ static void qmp_proxy_spawn_outcome(libxl__egc *egc,
      sdss->pvqemu.build_state = &sdss->dm_state;
      sdss->pvqemu.callback = spawn_stubdom_pvqemu_cb;
      if (need_pvqemu) {
-+      LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 6 \n");
 +
          libxl__spawn_local_dm(egc, &sdss->pvqemu);
      } else {
-+        LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 7 \n");
 +
          /* If dom0 qemu not needed, do not launch it */
          spawn_stubdom_pvqemu_cb(egc, &sdss->pvqemu, 0);
@@ -158,27 +165,19 @@ index fc264a3a..4b625800 100644
      return;
  
  out:
-@@ -2884,44 +2896,77 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
+@@ -2884,6 +2892,8 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
      const char *dm;
      int dm_state_fd = -1;
  
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: enter\n");
++
 +
      dmss_init(dmss);
  
      if (libxl_defbool_val(b_info->device_model_stubdomain)) {
-+        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 1");
-         abort();
-     }
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 1");
- 
-     dm = libxl__domain_device_model(gc, b_info);
-     if (!dm) {
-+        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 2");
+@@ -2895,19 +2905,27 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
          rc = ERROR_FAIL;
          goto out;
      }
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 2");
 +
      if (access(dm, X_OK) < 0) {
          LOGED(ERROR, domid, "device model %s is not executable", dm);
@@ -186,63 +185,45 @@ index fc264a3a..4b625800 100644
          goto out;
      }
  
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 3");
 +
 +
      rc = libxl__domain_get_device_model_uid(gc, dmss);
 -    if (rc)
 +    if (rc){
-+       LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 3");
 +
          goto out;
 +    }
 +
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 4\n");
 +
  
      if (b_info->device_model_version
              == LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN &&
          libxl_defbool_val(b_info->dm_restrict)) {
-+        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 4\n");
 +
          /* If we have to use dm_restrict, QEMU needs to be new enough
           * and will have the new interface where we can pre-open the
           * QMP socket. */
-         rc = libxl__pre_open_qmp_socket(gc, domid, &state->dm_monitor_fd);
-         if (rc) goto out;
-     }
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASSS 5\n");
- 
+@@ -2918,10 +2936,14 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
      rc = libxl__build_device_model_args(gc, dm, domid, guest_config,
                                            &args, &envs, state,
                                            &dm_state_fd);
 -    if (rc)
 +    if (rc){
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 6\n");
 +
          goto out;
  
 +   }
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 6\n");
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: b_info->type: %d\n", b_info->type);
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: HVM TYPE: %d\n", LIBXL_DOMAIN_TYPE_HVM);
-+
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: b_info->device_model_version: %d\n", b_info->device_model_version);
-+    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: XEN_TRADITIONAL: %d\n", LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN_TRADITIONAL);
-+
-+
 +
      if (b_info->type == LIBXL_DOMAIN_TYPE_HVM) {
-+        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 7");
 +
          path = xs_get_domain_path(ctx->xsh, domid);
          libxl__xs_printf(gc, XBT_NULL,
                           GCSPRINTF("%s/hvmloader/bios", path),
-@@ -2929,6 +2974,8 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
+@@ -2929,6 +2951,8 @@ void libxl__spawn_local_dm(libxl__egc *egc, libxl__dm_spawn_state *dmss)
          /* Disable relocating memory to make the MMIO hole larger
           * unless we're running qemu-traditional and vNUMA is not
           * configured. */
-+       LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: wanted value should be correctly defined");
++       LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: wanted value should be correctly defined");
 +
          libxl__xs_printf(gc, XBT_NULL,
                           GCSPRINTF("%s/hvmloader/allow-memory-relocate", path),
