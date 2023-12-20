@@ -118,7 +118,7 @@ index fc264a3a..4b625800 100644
  {
 +    const int domid = sdss->pvqemu.guest_domid;
      STATE_AO_GC(sdss->dm.spawn.ao);
-+    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
++    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 1 \n");
 +    printf("NEOWUTRAN: PRE ENTER FUNCTION: 42\n");
 +
      /*
@@ -127,10 +127,10 @@ index fc264a3a..4b625800 100644
       */
 -    int need_pvqemu = 1 || libxl__need_xenpv_qemu(gc, &sdss->dm_config);
 +    int need_pvqemu = libxl__need_xenpv_qemu(gc, &sdss->dm_config);
-+    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 2 \n");
++    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 2 \n");
  
      if (rc) goto out;
-+    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 3 \n");
++    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 3 \n");
  
      if (need_pvqemu < 0) {
 +       LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 4 \n");
@@ -138,18 +138,18 @@ index fc264a3a..4b625800 100644
          rc = need_pvqemu;
          goto out;
      }
-+    LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 5 \n");
++    LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 5 \n");
  
      sdss->pvqemu.spawn.ao = ao;
      sdss->pvqemu.guest_config = &sdss->dm_config;
      sdss->pvqemu.build_state = &sdss->dm_state;
      sdss->pvqemu.callback = spawn_stubdom_pvqemu_cb;
      if (need_pvqemu) {
-+      LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 6 \n");
++      LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 6 \n");
 +
          libxl__spawn_local_dm(egc, &sdss->pvqemu);
      } else {
-+        LOGD(DEBUG, domid, "NEOWUTRAN PRE ENTER FUNCTION: 7 \n");
++        LOGD(ERROR, domid, "NEOWUTRAN PRE ENTER FUNCTION: 7 \n");
 +
          /* If dom0 qemu not needed, do not launch it */
          spawn_stubdom_pvqemu_cb(egc, &sdss->pvqemu, 0);
@@ -162,23 +162,23 @@ index fc264a3a..4b625800 100644
      const char *dm;
      int dm_state_fd = -1;
  
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: enter\n");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: enter\n");
 +
      dmss_init(dmss);
  
      if (libxl_defbool_val(b_info->device_model_stubdomain)) {
-+        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 1");
++        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 1");
          abort();
      }
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 1");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 1");
  
      dm = libxl__domain_device_model(gc, b_info);
      if (!dm) {
-+        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 2");
++        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 2");
          rc = ERROR_FAIL;
          goto out;
      }
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 2");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 2");
 +
      if (access(dm, X_OK) < 0) {
          LOGED(ERROR, domid, "device model %s is not executable", dm);
@@ -186,13 +186,13 @@ index fc264a3a..4b625800 100644
          goto out;
      }
  
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 3");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 3");
 +
 +
      rc = libxl__domain_get_device_model_uid(gc, dmss);
 -    if (rc)
 +    if (rc){
-+       LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 3");
++       LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 3");
 +
          goto out;
 +    }
@@ -203,7 +203,7 @@ index fc264a3a..4b625800 100644
      if (b_info->device_model_version
              == LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN &&
          libxl_defbool_val(b_info->dm_restrict)) {
-+        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 4\n");
++        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 4\n");
 +
          /* If we have to use dm_restrict, QEMU needs to be new enough
           * and will have the new interface where we can pre-open the
@@ -211,29 +211,29 @@ index fc264a3a..4b625800 100644
          rc = libxl__pre_open_qmp_socket(gc, domid, &state->dm_monitor_fd);
          if (rc) goto out;
      }
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASSS 5\n");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASSS 5\n");
  
      rc = libxl__build_device_model_args(gc, dm, domid, guest_config,
                                            &args, &envs, state,
                                            &dm_state_fd);
 -    if (rc)
 +    if (rc){
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: ERROR 6\n");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: ERROR 6\n");
 +
          goto out;
  
 +   }
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 6\n");
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: b_info->type: %d\n", b_info->type);
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: HVM TYPE: %d\n", LIBXL_DOMAIN_TYPE_HVM);
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 6\n");
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: b_info->type: %d\n", b_info->type);
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: HVM TYPE: %d\n", LIBXL_DOMAIN_TYPE_HVM);
 +
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: b_info->device_model_version: %d\n", b_info->device_model_version);
-+    LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: XEN_TRADITIONAL: %d\n", LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN_TRADITIONAL);
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: b_info->device_model_version: %d\n", b_info->device_model_version);
++    LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: XEN_TRADITIONAL: %d\n", LIBXL_DEVICE_MODEL_VERSION_QEMU_XEN_TRADITIONAL);
 +
 +
 +
      if (b_info->type == LIBXL_DOMAIN_TYPE_HVM) {
-+        LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: PASS 7");
++        LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: PASS 7");
 +
          path = xs_get_domain_path(ctx->xsh, domid);
          libxl__xs_printf(gc, XBT_NULL,
@@ -242,7 +242,7 @@ index fc264a3a..4b625800 100644
          /* Disable relocating memory to make the MMIO hole larger
           * unless we're running qemu-traditional and vNUMA is not
           * configured. */
-+       LOGD(DEBUG, domid, "NEOWUTRAN spawn_local_dm: wanted value should be correctly defined");
++       LOGD(ERROR, domid, "NEOWUTRAN spawn_local_dm: wanted value should be correctly defined");
 +
          libxl__xs_printf(gc, XBT_NULL,
                           GCSPRINTF("%s/hvmloader/allow-memory-relocate", path),
