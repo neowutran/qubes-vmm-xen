@@ -73,7 +73,7 @@ index 03b464da..88645667 100644
           *   big enough, or until it's 2GiB, or until it overlaps guest
           *   memory
           */
-+        printf("NEOWUTRAN pci.c: mmio_total: %lx \n",mmio_total);
++        printf("NEOWUTRAN pci.c: mmio_total: %llx \n",mmio_total);
 +        printf("NEOWUTRAN pci.c: pci_mem_end: %d\n",pci_mem_end);
 +        printf("NEOWUTRAN pci.c: pci_mem_start: %d\n",pci_mem_start);
 +        printf("NEOWUTRAN pci.c: allow_memory_relocate: %d\n",allow_memory_relocate);
