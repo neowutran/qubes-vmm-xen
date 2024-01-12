@@ -89,6 +89,9 @@ Provides: xen-gvt
 # 1000+: Qubes specific patches
 # 1100+: Others
 
+# MSI
+Patch4444: 4444-MSI.patch
+
 # EFI workarounds
 Patch0201: 0201-EFI-early-Add-noexit-to-inhibit-calling-ExitBootServ.patch
 Patch0202: 0202-efi-Ensure-incorrectly-typed-runtime-services-get-ma.patch
@@ -206,8 +209,7 @@ Patch1200: 1200-hypercall-XENMEM_get_mfn_from_pfn.patch
 Patch1201: 1201-patch-gvt-hvmloader.patch.patch
 Patch1202: 1202-libxl-Add-partially-Intel-GVT-g-support-xengt-device.patch
 
-# MSI
-Patch4444: 4444-MSI.patch
+
 
 
 %if %build_qemutrad
