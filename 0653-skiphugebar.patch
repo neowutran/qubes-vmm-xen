@@ -1,9 +1,11 @@
+diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
+index 257a6feb..e1289a51 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
-@@ -33,6 +33,13 @@ uint32_t pci_mem_start = HVM_BELOW_4G_MM
+@@ -33,6 +33,13 @@ uint32_t pci_mem_start = HVM_BELOW_4G_MMIO_START;
  const uint32_t pci_mem_end = RESERVED_MEMBASE;
  uint64_t pci_hi_mem_start = 0, pci_hi_mem_end = 0;
-
+ 
 +/*
 + * BARs larger than this value are put in 64-bit space unconditionally.  That
 + * is, such BARs also don't play into the determination of how big the lowmem
@@ -13,32 +15,37 @@
 +
  enum virtual_vga virtual_vga = VGA_none;
  unsigned long igd_opregion_pgbase = 0;
-
-@@ -286,9 +293,11 @@ void pci_setup(void)
+ 
+@@ -286,9 +293,14 @@ void pci_setup(void)
              bars[i].bar_reg = bar_reg;
              bars[i].bar_sz  = bar_sz;
-
+ 
 -            if ( ((bar_data & PCI_BASE_ADDRESS_SPACE) ==
 -                  PCI_BASE_ADDRESS_SPACE_MEMORY) ||
 -                 (bar_reg == PCI_ROM_ADDRESS) )
-+            if ( is_64bar && bar_sz > HUGE_BAR_THRESH )
++	    printf("NEOWUTRAN: bar size: %llx", bar_sz);
++ 	    printf("NEOWUTRAN: 64bar: %d", is_64bar);
++            if ( is_64bar && bar_sz > HUGE_BAR_THRESH ){
 +                bar64_relocate = 1;
-+            else if ( ((bar_data & PCI_BASE_ADDRESS_SPACE) ==
++		printf("NEOWUTRAN bar relocate");
++            }else if ( ((bar_data & PCI_BASE_ADDRESS_SPACE) ==
 +                       PCI_BASE_ADDRESS_SPACE_MEMORY) ||
 +                      (bar_reg == PCI_ROM_ADDRESS) )
                  mmio_total += bar_sz;
-
+ 
              nr_bars++;
-@@ -367,7 +376,7 @@ void pci_setup(void)
+@@ -367,8 +379,9 @@ void pci_setup(void)
              pci_mem_start = hvm_info->low_mem_pgend << PAGE_SHIFT;
      }
-
+ 
 -    if ( mmio_total > (pci_mem_end - pci_mem_start) )
 +    if ( mmio_total > (pci_mem_end - pci_mem_start) || bar64_relocate )
      {
++        printf("NEOWUTRAN: will relocate BAR ");
          printf("Low MMIO hole not large enough for all devices,"
                 " relocating some BARs to 64-bit\n");
-@@ -446,8 +455,9 @@ void pci_setup(void)
+         bar64_relocate = 1;
+@@ -446,8 +459,10 @@ void pci_setup(void)
           *   the code here assumes it to be.)
           * Should either of those two conditions change, this code will break.
           */
@@ -47,10 +54,11 @@
 +        using_64bar = bars[i].is_64bar && bar64_relocate &&
 +            (mmio_total > (mem_resource.max - mem_resource.base) ||
 +             bar_sz > HUGE_BAR_THRESH);
++        printf("NEOWUTRAN using 64 bar: %d", using_64bar);
          bar_data = pci_readl(devfn, bar_reg);
-
+ 
          if ( (bar_data & PCI_BASE_ADDRESS_SPACE) ==
-@@ -467,7 +477,8 @@ void pci_setup(void)
+@@ -467,7 +482,8 @@ void pci_setup(void)
                  resource = &mem_resource;
                  bar_data &= ~PCI_BASE_ADDRESS_MEM_MASK;
              }
