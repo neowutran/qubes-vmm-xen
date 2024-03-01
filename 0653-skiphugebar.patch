@@ -1,5 +1,5 @@
 diff --git a/tools/firmware/hvmloader/pci.c b/tools/firmware/hvmloader/pci.c
-index 257a6feb..e1289a51 100644
+index 257a6feb..38788d22 100644
 --- a/tools/firmware/hvmloader/pci.c
 +++ b/tools/firmware/hvmloader/pci.c
 @@ -33,6 +33,13 @@ uint32_t pci_mem_start = HVM_BELOW_4G_MMIO_START;
@@ -23,11 +23,11 @@ index 257a6feb..e1289a51 100644
 -            if ( ((bar_data & PCI_BASE_ADDRESS_SPACE) ==
 -                  PCI_BASE_ADDRESS_SPACE_MEMORY) ||
 -                 (bar_reg == PCI_ROM_ADDRESS) )
-+	    printf("NEOWUTRAN: bar size: %llx", bar_sz);
-+ 	    printf("NEOWUTRAN: 64bar: %d", is_64bar);
++	    printf("NEOWUTRAN: bar size: %lx ; thresh: %lx\n", bar_sz, HUGE_BAR_THRESH);
++ 	    printf("NEOWUTRAN: 64bar: %d\n", is_64bar);
 +            if ( is_64bar && bar_sz > HUGE_BAR_THRESH ){
 +                bar64_relocate = 1;
-+		printf("NEOWUTRAN bar relocate");
++		printf("NEOWUTRAN bar relocate\n");
 +            }else if ( ((bar_data & PCI_BASE_ADDRESS_SPACE) ==
 +                       PCI_BASE_ADDRESS_SPACE_MEMORY) ||
 +                      (bar_reg == PCI_ROM_ADDRESS) )
@@ -41,7 +41,7 @@ index 257a6feb..e1289a51 100644
 -    if ( mmio_total > (pci_mem_end - pci_mem_start) )
 +    if ( mmio_total > (pci_mem_end - pci_mem_start) || bar64_relocate )
      {
-+        printf("NEOWUTRAN: will relocate BAR ");
++        printf("NEOWUTRAN: will relocate BAR \n");
          printf("Low MMIO hole not large enough for all devices,"
                 " relocating some BARs to 64-bit\n");
          bar64_relocate = 1;
@@ -54,7 +54,7 @@ index 257a6feb..e1289a51 100644
 +        using_64bar = bars[i].is_64bar && bar64_relocate &&
 +            (mmio_total > (mem_resource.max - mem_resource.base) ||
 +             bar_sz > HUGE_BAR_THRESH);
-+        printf("NEOWUTRAN using 64 bar: %d", using_64bar);
++        printf("NEOWUTRAN using 64 bar: %d\n", using_64bar);
          bar_data = pci_readl(devfn, bar_reg);
  
          if ( (bar_data & PCI_BASE_ADDRESS_SPACE) ==
